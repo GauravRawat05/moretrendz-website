@@ -190,6 +190,6 @@
 
         function updateCartIcon() { const cart = getCart(); const cartCountElement = document.getElementById('cart-count'); const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); cartCountElement.textContent = totalItems; }
     </script>
-        <script src="/js/main.js" defer></script>
+        <script type="module" src="/js/main.js" defer></script>
 </body>
 </html>
