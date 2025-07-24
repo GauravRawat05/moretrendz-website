@@ -1,0 +1,19 @@
+<!-- File: partials/common-elements.html -->
+
+<!-- Toast Notification HTML -->
+<div id="toast-notification" class="hidden items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow-lg" role="alert">
+    <div id="toast-icon" class="text-green-500"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
+    <div id="toast-message" class="pl-4 text-sm font-normal">Message goes here.</div>
+</div>
+
+<!-- Search Overlay HTML -->
+<div id="search-overlay" class="fixed inset-0 z-[60] bg-black bg-opacity-50 hidden opacity-0 flex items-start justify-center pt-20">
+    <div class="w-full max-w-xl p-4">
+        <form id="search-form-overlay" action="./search-results.html" method="GET" class="relative">
+            <input type="search" name="q" placeholder="Search for products..." class="w-full px-6 py-4 border border-gray-300 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-white">
+            <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black">
+                <i data-lucide="search" class="w-6 h-6"></i>
+            </button>
+        </form>
+    </div>
+</div>

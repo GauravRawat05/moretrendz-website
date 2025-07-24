@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoreTrendz - Find What's Trending</title>
+    
+    <link rel="icon" type="image/png" href="/Favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; }
+        .faq-question.active + .faq-answer { max-height: 200px; }
+        .faq-icon { transition: transform 0.3s ease-in-out; }
+        .faq-question.active .faq-icon { transform: rotate(45deg); }
+        #toast-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); transition: top 0.5s ease-in-out; z-index: 1000; }
+        #toast-notification.show { top: 20px; }
+        #search-overlay { transition: opacity 0.3s ease-in-out; }
+        #search-overlay.hidden { pointer-events: none; }
+    </style>
+    <script>
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1774275048953349');
+        fbq('track', 'PageView');
+    </script>
+</head>
+<body class="bg-white flex flex-col min-h-screen">
+    <div id="common-elements-placeholder"></div>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1774275048953349&ev=PageView&noscript=1"/></noscript>
+    
+    <div id="toast-notification" class="hidden items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow-lg" role="alert">
+        <div id="toast-icon" class="text-green-500"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
+        <div id="toast-message" class="pl-4 text-sm font-normal">Message goes here.</div>
+    </div>
+
+    <div id="header-placeholder"></div>
+
+    <!-- NEW: Search Overlay for a premium search experience -->
+
+    
+    <main class="flex-grow">
+        <!-- HERO SECTION -->
+        <section id="hero-section" class="relative min-h-[80vh] bg-cover bg-center flex items-center text-white transition-all duration-500">
+            <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            <div id="hero-content-container" class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight uppercase">Find What's Trending</h1>
+                <p class="mt-4 max-w-xl mx-auto md:mx-0 text-lg md:text-xl">The latest viral products, delivered to your door.</p>
+            </div>
+        </section>
+
+        <!-- NEW ARRIVALS -->
+        <section id="new-arrivals" class="py-16 sm:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center tracking-tight text-black">New Arrivals</h2>
+                <div id="product-grid" class="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10"></div>
+            </div>
+        </section>
+        
+        <!-- FAQ SECTION -->
+        <section class="py-16 sm:py-24 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+                <h2 class="text-3xl font-bold text-center tracking-tight text-black">Frequently Asked Questions</h2>
+                <div class="mt-12 space-y-4">
+                    <div class="border border-gray-200 rounded-lg"><button class="faq-question w-full flex justify-between items-center p-6 text-left"><span class="text-lg font-medium">What are the shipping times?</span><i data-lucide="plus" class="faq-icon w-6 h-6"></i></button><div class="faq-answer px-6 pb-6"><p class="text-gray-600">Standard shipping usually takes 5-7 business days within India. We also offer express shipping options at checkout for faster delivery.</p></div></div>
+                    <div class="border border-gray-200 rounded-lg"><button class="faq-question w-full flex justify-between items-center p-6 text-left"><span class="text-lg font-medium">What is your return policy?</span><i data-lucide="plus" class="faq-icon w-6 h-6"></i></button><div class="faq-answer px-6 pb-6"><p class="text-gray-600">We offer a 14-day return policy for unused items in their original packaging. Please visit our Refund Policy page for full details on how to initiate a return.</p></div></div>
+                    <div class="border border-gray-200 rounded-lg"><button class="faq-question w-full flex justify-between items-center p-6 text-left"><span class="text-lg font-medium">Do you offer Cash on Delivery (COD)?</span><i data-lucide="plus" class="faq-icon w-6 h-6"></i></button><div class="faq-answer px-6 pb-6"><p class="text-gray-600">Yes! We offer Cash on Delivery for most locations across India. You can select the COD option during the checkout process.</p></div></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="footer-placeholder"></div>
+
+    <!-- Page-specific script for homepage logic -->
+    <script>
+        // --- Global Functions (accessible by main.js) ---
+        function getCart() { return JSON.parse(localStorage.getItem('moreTrendzCart')) || []; }
+        function updateCartIcon() { 
+            const cart = getCart(); 
+            const cartCountElement = document.getElementById('cart-count'); 
+            if (cartCountElement) {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); 
+                cartCountElement.textContent = totalItems; 
+            }
+        }
+        const toastElement = document.getElementById('toast-notification'), toastMessageElement = document.getElementById('toast-message'), toastIconElement = document.getElementById('toast-icon'); let toastTimeout; function showToast(message, type = 'success') { if (toastTimeout) clearTimeout(toastTimeout); toastMessageElement.textContent = message; if (type === 'success') { toastIconElement.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>'; toastIconElement.className = 'text-green-500'; } else { toastIconElement.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6"></i>'; toastIconElement.className = 'text-red-500'; } lucide.createIcons(); toastElement.classList.remove('hidden'); toastElement.classList.add('show', 'flex'); toastTimeout = setTimeout(() => { toastElement.classList.remove('show'); setTimeout(() => { toastElement.classList.add('hidden'); toastElement.classList.remove('flex'); }, 500); }, 4000); }
+
+        // --- Homepage Specific Logic ---
+        let allProducts = [];
+        
+        const setupFAQ = () => { 
+            const faqQuestions = document.querySelectorAll('.faq-question'); 
+            faqQuestions.forEach(question => { 
+                question.addEventListener('click', () => { 
+                    question.classList.toggle('active'); 
+                }); 
+            }); 
+        };
+        
+        const fetchProducts = async () => {
+            const productGrid = document.getElementById('product-grid');
+            try {
+                const response = await fetch('https://moretrendz-backend.onrender.com/api/products');
+                const data = await response.json();
+                if (data.featuredProduct) { renderFeaturedProduct(data.featuredProduct); }
+                const products = data.products;
+                allProducts = products;
+                productGrid.innerHTML = '';
+                if (products.length === 0) { productGrid.innerHTML = '<p class="col-span-full text-center text-gray-500">No new arrivals found.</p>'; } else { products.forEach(product => { if (!product.media || product.media.length === 0) return; const imageUrl = product.media[0].url; const productCard = `<div class="group relative product-card flex flex-col"><a href="./product.html?id=${product._id}" class="block"><div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200"><img src="${imageUrl}" alt="${product.name}" class="h-full w-full object-cover object-center"></div></a><div class="mt-4 flex-grow"><h3 class="text-sm text-gray-700"><a href="./product.html?id=${product._id}">${product.name}</a></h3><p class="mt-1 text-lg font-medium text-black">₹${product.price.toFixed(2)}</p></div><div class="mt-4 flex flex-col space-y-2"><button onclick="addToCart('${product._id}')" class="w-full bg-gray-800 text-white text-sm font-semibold py-2 px-4 rounded-md hover:bg-black transition-all duration-300">Add to Cart</button><button onclick="buyNowPrepaid('${product._id}')" class="w-full bg-green-600 text-white text-sm font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition-all duration-300">Prepaid (15% OFF)</button></div></div>`; productGrid.innerHTML += productCard; }); }
+            } catch (error) { console.error('Failed to fetch products:', error); productGrid.innerHTML = '<p class="col-span-full text-center text-red-500">Could not load products.</p>'; }
+        };
+
+        const renderFeaturedProduct = (product) => {
+            if (!product.media || product.media.length === 0) return;
+            const heroSection = document.getElementById('hero-section');
+            const heroContentContainer = document.getElementById('hero-content-container');
+            const imageUrl = product.media[0].url;
+            heroSection.style.backgroundImage = `url('${imageUrl}')`;
+            heroContentContainer.innerHTML = `<p class="text-sm md:text-base font-semibold uppercase tracking-widest text-yellow-300">Featured Product</p><h1 class="mt-4 text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight uppercase">${product.name}</h1><p class="mt-4 max-w-xl mx-auto md:mx-0 text-lg md:text-xl">₹${product.price.toFixed(2)}</p><div class="mt-8"><a href="./product.html?id=${product._id}" class="inline-block bg-white text-black font-bold py-3 px-10 rounded-md hover:bg-gray-200 transition-colors text-lg">Shop Now</a></div>`;
+        };
+        
+        const saveCart = (cart) => { localStorage.setItem('moreTrendzCart', JSON.stringify(cart)); updateCartIcon(); };
+        const addToCart = (productId) => { const productToAdd = allProducts.find(p => p._id === productId); if (!productToAdd) return; fbq('track', 'AddToCart', { content_name: productToAdd.name, content_ids: [productToAdd._id], content_type: 'product', value: productToAdd.price, currency: 'INR' }); let cart = getCart(); const existingProductIndex = cart.findIndex(item => item._id === productId); if (existingProductIndex !== -1) { cart[existingProductIndex].quantity += 1; } else { const cartItem = { _id: productToAdd._id, name: productToAdd.name, price: productToAdd.price, imageURL: productToAdd.media[0].url, quantity: 1 }; cart.push(cartItem); } saveCart(cart); showToast(`${productToAdd.name} has been added to your cart!`); };
+        const buyNowPrepaid = (productId) => { localStorage.removeItem('moreTrendzDiscount'); const productToAdd = allProducts.find(p => p._id === productId); if (!productToAdd) return; let cart = []; const cartItem = { _id: productToAdd._id, name: productToAdd.name, price: productToAdd.price, imageURL: productToAdd.media[0].url, quantity: 1 }; cart.push(cartItem); localStorage.setItem('moreTrendzPrepaidDiscount', 'true'); saveCart(cart); window.location.href = './checkout.html'; };
+        
+        // This function will be called by main.js after the page is ready
+        function initializePageScripts() {
+            fetchProducts();
+            setupFAQ();
+        }
+    </script>
+
+    <!-- CRITICAL: This script loads the header, footer, and other global logic -->
+    <script src="/js/main.js" defer></script>
+
+</body>
+</html>

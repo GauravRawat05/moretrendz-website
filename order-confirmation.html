@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status - MoreTrendz</title>
+    <link rel="icon" type="image/png" href="/Favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/Favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/Favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/Favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/Favicon/site.webmanifest" />
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+    </style>
+        <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1774275048953349'); // <-- ❗ PASTE YOUR PIXEL ID HERE
+        fbq('track', 'PageView');
+    </script>
+    <!-- The noscript tag has been moved from here -->
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <div id="common-elements-placeholder"></div>
+    <div id="header-placeholder"></div>
+        <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=1774275048953349&ev=PageView&noscript=1"
+    /></noscript>
+    <main class="flex-grow flex items-center justify-center">
+        <div class="bg-white p-8 sm:p-12 rounded-lg shadow-xl text-center max-w-lg w-full">
+            
+            <!-- Success Message (hidden by default) -->
+            <div id="success-message" class="hidden">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
+                    <i data-lucide="check" class="h-10 w-10 text-green-600"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mt-6">Thank You!</h1>
+                <p class="text-gray-600 mt-2">Your order has been placed successfully.</p>
+                <p class="text-gray-500 text-sm mt-4">Your Order ID is:</p>
+                <p id="order-id" class="text-lg font-semibold text-gray-800"></p>
+                <p class="text-gray-500 text-sm mt-4">You will receive an email confirmation shortly.</p>
+            </div>
+
+            <!-- Failure Message (hidden by default) -->
+            <div id="failure-message" class="hidden">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100">
+                    <i data-lucide="x" class="h-10 w-10 text-red-600"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mt-6">Payment Failed</h1>
+                <p class="text-gray-600 mt-2">Unfortunately, we were unable to process your payment.</p>
+                <p class="text-gray-500 text-sm mt-4">Please try again or contact customer support if the problem persists.</p>
+                <p id="failed-order-id" class="text-sm text-gray-500 mt-2"></p>
+            </div>
+
+            <div class="mt-8">
+                <a href="./index.html" class="bg-black text-white font-bold py-3 px-8 rounded-md hover:bg-gray-800 transition-colors">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- NEW: FOOTER SECTION -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const orderId = urlParams.get('orderId');
+
+            const successMessage = document.getElementById('success-message');
+            const failureMessage = document.getElementById('failure-message');
+            
+            if (status === 'success' && orderId) {
+                document.getElementById('order-id').textContent = `#${orderId}`;
+                successMessage.classList.remove('hidden');
+            } else {
+                if (orderId) {
+                    document.getElementById('failed-order-id').textContent = `(Reference Order ID: ${orderId})`;
+                }
+                failureMessage.classList.remove('hidden');
+            }
+
+            lucide.createIcons();
+        });
+    </script>
+        <script src="/js/main.js" defer></script>
+</body>
+</html>

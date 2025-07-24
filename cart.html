@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - MoreTrendz</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+        #ai-modal-backdrop { transition: opacity 0.3s ease; }
+        #ai-modal-content { transition: transform 0.3s ease; }
+
+        /* --- NEW: Toast Notification Styles --- */
+        #toast-notification {
+            position: fixed;
+            top: -100px; /* Start off-screen */
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 0.5s ease-in-out;
+            z-index: 1000;
+        }
+        #toast-notification.show {
+            top: 20px; /* Slide into view */
+        }
+    </style>
+        <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1774275048953349'); // <-- ❗ PASTE YOUR PIXEL ID HERE
+        fbq('track', 'PageView');
+    </script>
+    <!-- The noscript tag has been moved from here -->
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <div id="common-elements-placeholder"></div>
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=1774275048953349&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- NEW: Toast Notification HTML -->
+    <!-- removed and placed to common elements.html -->
+
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Cart Section -->
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Your Shopping Cart</h1>
+        <div id="cart-container" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="cart-items-list"></div>
+            <div id="cart-summary" class="mt-6 border-t pt-6 text-right"></div>
+        </div>
+    </main>
+
+    <!-- AI Suggestion Modal -->
+    <div id="ai-modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0">
+        <div id="ai-modal-content" class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform scale-95">
+            <div class="flex items-center justify-between mb-4"><h2 class="text-xl font-bold text-gray-800">✨ AI Styling Assistant</h2><button onclick="closeAiModal()" class="text-gray-500 hover:text-gray-800">&times;</button></div>
+            <div id="ai-suggestion-text" class="text-gray-600"></div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+
+    <script>
+        // --- NEW: Toast Notification Logic ---
+        const toastElement = document.getElementById('toast-notification');
+        const toastMessageElement = document.getElementById('toast-message');
+        const toastIconElement = document.getElementById('toast-icon');
+        let toastTimeout;
+
+        function showToast(message, type = 'success') {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastMessageElement.textContent = message;
+            if (type === 'success') {
+                toastIconElement.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
+                toastIconElement.className = 'text-green-500';
+            } else {
+                toastIconElement.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6"></i>';
+                toastIconElement.className = 'text-red-500';
+            }
+            lucide.createIcons();
+            toastElement.classList.remove('hidden');
+            toastElement.classList.add('show', 'flex');
+            toastTimeout = setTimeout(() => {
+                toastElement.classList.remove('show');
+                setTimeout(() => {
+                    toastElement.classList.add('hidden');
+                    toastElement.classList.remove('flex');
+                }, 500);
+            }, 4000);
+        }
+
+        // --- Existing Page Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            displayCartItems();
+            lucide.createIcons();
+        });
+
+        function getCart() { return JSON.parse(localStorage.getItem('moreTrendzCart')) || []; }
+        function saveCart(cart) { localStorage.setItem('moreTrendzCart', JSON.stringify(cart)); displayCartItems(); }
+
+        function displayCartItems() {
+            const cart = getCart();
+            const cartItemsList = document.getElementById('cart-items-list');
+            const cartSummary = document.getElementById('cart-summary');
+            
+            cartItemsList.innerHTML = '';
+            cartSummary.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartItemsList.innerHTML = '<p class="text-center text-gray-500">Your cart is empty.</p>';
+                return;
+            }
+
+            let subtotal = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                const cartItemHTML = `
+                    <div class="flex flex-col sm:flex-row items-center justify-between py-4 border-b">
+                        <div class="flex items-center w-full sm:w-auto mb-4 sm:mb-0">
+                            <img src="${item.imageURL}" alt="${item.name}" class="h-20 w-20 object-cover rounded-md mr-4">
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-semibold">${item.name}</h3>
+                                <p class="text-gray-600">₹${item.price.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end w-full sm:w-auto">
+                            <div class="flex items-center border rounded-md">
+                                <button onclick="updateQuantity('${item._id}', -1)" class="px-3 py-1 text-lg">-</button>
+                                <span class="px-4 py-1">${item.quantity}</span>
+                                <button onclick="updateQuantity('${item._id}', 1)" class="px-3 py-1 text-lg">+</button>
+                            </div>
+                            <p class="w-24 text-right font-semibold ml-4 sm:ml-6">₹${itemTotal.toFixed(2)}</p>
+                            <button onclick="removeFromCart('${item._id}')" class="ml-4 sm:ml-6 text-red-500 hover:text-red-700">Remove</button>
+                        </div>
+                    </div>
+                `;
+                cartItemsList.innerHTML += cartItemHTML;
+            });
+
+            const summaryHTML = `<p class="text-xl font-semibold">Subtotal: <span class="ml-2">₹${subtotal.toFixed(2)}</span></p><div class="mt-4 space-y-2 sm:space-y-0 sm:flex sm:justify-end sm:space-x-4"><a href="./checkout.html" class="w-full sm:w-auto inline-block bg-black text-white font-bold py-3 px-8 rounded-md hover:bg-gray-800 transition-colors text-center">Proceed to Checkout</a></div>`;
+            cartSummary.innerHTML = summaryHTML;
+        }
+
+        function updateQuantity(productId, change) { let cart = getCart(); const productIndex = cart.findIndex(item => item._id === productId); if (productIndex !== -1) { cart[productIndex].quantity += change; if (cart[productIndex].quantity <= 0) { cart.splice(productIndex, 1); } } saveCart(cart); }
+        function removeFromCart(productId) { let cart = getCart().filter(item => item._id !== productId); saveCart(cart); }
+        function openAiModal() { const modalBackdrop = document.getElementById('ai-modal-backdrop'); const modalContent = document.getElementById('ai-modal-content'); modalBackdrop.classList.remove('hidden'); setTimeout(() => { modalBackdrop.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); }, 10); }
+        function closeAiModal() { const modalBackdrop = document.getElementById('ai-modal-backdrop'); const modalContent = document.getElementById('ai-modal-content'); modalBackdrop.classList.add('opacity-0'); modalContent.classList.add('scale-95'); setTimeout(() => { modalBackdrop.classList.add('hidden'); }, 300); }
+        
+        async function getAiSuggestion() { 
+            const cart = getCart(); 
+            if (cart.length === 0) { 
+                // --- UPDATED: Replaced alert with showToast ---
+                showToast("Add items to your cart first!", 'error'); 
+                return; 
+            } 
+            const suggestionTextElement = document.getElementById('ai-suggestion-text'); 
+            suggestionTextElement.innerHTML = '<p>✨ Thinking of the perfect look for you...</p>'; 
+            openAiModal(); 
+            const productNames = cart.map(item => item.name); 
+            try { 
+                const response = await fetch('https://moretrendz-backend.onrender.com/api/ai/suggest-outfit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ productNames }) }); 
+                if (!response.ok) { throw new Error('Could not get a suggestion from the AI stylist.'); } 
+                const data = await response.json(); 
+                suggestionTextElement.textContent = data.suggestion; 
+            } catch (error) { 
+                console.error("Error getting AI suggestion:", error); 
+                suggestionTextElement.textContent = "Sorry, our AI stylist is busy right now. Please try again in a moment."; 
+            } 
+        }
+    </script>
+    <script src="/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - MoreTrendz</title>
+    <link rel="icon" type="image/png" href="/Favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/Favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/Favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/Favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/Favicon/site.webmanifest" />
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+        .prose-styles p, .prose-styles ul, .prose-styles ol { margin-bottom: 1rem; }
+        .prose-styles ul { list-style-type: disc; padding-left: 1.5rem; }
+        .prose-styles a { color: #4f46e5; text-decoration: underline; }
+        .thumbnail { cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
+        .thumbnail.active { border-color: #000000; }
+        .thumbnail:hover { border-color: #9ca3af; }
+        #toast-notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 0.5s ease-in-out;
+            z-index: 1000;
+        }
+        #toast-notification.show {
+            top: 20px;
+        }
+    </style>
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1774275048953349');
+        fbq('track', 'PageView');
+    </script>
+    <!-- The noscript tag has been moved from here -->
+</head>
+<body class="bg-white flex flex-col min-h-screen">
+    <div id="common-elements-placeholder"></div>
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=1774275048953349&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- removed and placed to common elements.html -->
+
+    <div id="header-placeholder"></div>
+
+    <main id="page-container" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+        <div id="product-container">
+            <p id="loading-message" class="text-center text-gray-500">Loading product...</p>
+        </div>
+        <div id="related-products-section" class="mt-16 pt-8 border-t hidden">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">You Might Also Like</h2>
+            <div id="related-products-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"></div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        const toastElement = document.getElementById('toast-notification');
+        const toastMessageElement = document.getElementById('toast-message');
+        const toastIconElement = document.getElementById('toast-icon');
+        let toastTimeout;
+
+        function showToast(message, type = 'success') {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastMessageElement.textContent = message;
+            if (type === 'success') {
+                toastIconElement.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
+                toastIconElement.className = 'text-green-500';
+            } else {
+                toastIconElement.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6"></i>';
+                toastIconElement.className = 'text-red-500';
+            }
+            lucide.createIcons();
+            toastElement.classList.remove('hidden');
+            toastElement.classList.add('show', 'flex');
+            toastTimeout = setTimeout(() => {
+                toastElement.classList.remove('show');
+                setTimeout(() => {
+                    toastElement.classList.add('hidden');
+                    toastElement.classList.remove('flex');
+                }, 500);
+            }, 4000);
+        }
+
+        let currentProduct = null;
+        document.addEventListener('DOMContentLoaded', () => { fetchProductDetails(); updateCartIcon(); lucide.createIcons(); });
+
+        async function fetchProductDetails() {
+            const container = document.getElementById('product-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            if (!productId) { container.innerHTML = '<p class="text-center text-red-500">No product ID provided.</p>'; return; }
+            try {
+                const response = await fetch(`https://moretrendz-backend.onrender.com/api/products/${productId}`);
+                if (!response.ok) throw new Error('Product not found');
+                const data = await response.json();
+                if (!data.product || !data.product.media || data.product.media.length === 0) { throw new Error('Product data is invalid or missing media.'); }
+                currentProduct = data.product;
+                loadingMessage.style.display = 'none';
+                displayProduct(data.product);
+                displayRelatedProducts(data.relatedProducts);
+            } catch (error) {
+                console.error('Error fetching product details:', error);
+                container.innerHTML = `<p class="text-center text-red-500">Error: ${error.message}. Please try again.</p>`;
+            }
+        }
+
+        function displayProduct(product) {
+            const container = document.getElementById('product-container');
+            let thumbnailsHTML = '';
+            product.media.forEach((item, index) => { thumbnailsHTML += `<div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMedia(${index})">${item.type === 'image' ? `<img src="${item.url}" alt="Thumbnail ${index + 1}" class="w-full h-20 object-cover rounded-md">` : `<div class="w-full h-20 bg-black flex items-center justify-center rounded-md"><i data-lucide="video" class="w-6 h-6 text-white"></i></div>`}</div>`; });
+            let starsHTML = '';
+            for(let i = 1; i <= 5; i++) { starsHTML += `<i data-lucide="star" class="w-5 h-5 ${i <= 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'}"></i>`; }
+            const productHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"><div class="flex flex-col-reverse md:flex-row gap-4"><div class="flex md:flex-col gap-2 overflow-x-auto md:overflow-x-hidden">${thumbnailsHTML}</div><div id="main-media-display" class="flex-1 aspect-w-1 aspect-h-1"></div></div><div class="flex flex-col justify-center"><h1 class="text-3xl lg:text-4xl font-bold text-gray-800">${product.name}</h1><div class="mt-4 flex items-center"><div class="flex items-center">${starsHTML}</div><a href="#" class="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">22 reviews</a></div><p class="text-3xl text-gray-900 mt-4">₹${product.price.toFixed(2)}</p><div class="mt-6 border-t pt-6"><div class="flex items-center space-x-4 mb-4"><label class="font-medium">Quantity:</label><div class="flex items-center border rounded-md"><button onclick="updateQuantity(-1)" class="px-3 py-1 text-lg">-</button><span id="quantity-display" class="px-4 py-1">1</span><button onclick="updateQuantity(1)" class="px-3 py-1 text-lg">+</button></div></div><button onclick="addToCart()" class="w-full bg-gray-800 text-white font-bold py-3 px-8 rounded-md hover:bg-black transition-colors mb-3">Add to Cart</button><div class="grid grid-cols-2 gap-3"><button onclick="buyNow('COD')" class="w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-md hover:bg-blue-700 transition-colors">Buy with COD</button><button onclick="buyNow('Online')" class="w-full bg-green-600 text-white font-bold py-3 px-8 rounded-md hover:bg-green-700 transition-colors">Prepaid (15% OFF)</button></div></div><div class="mt-8 border-t pt-6"><h2 class="text-lg font-semibold text-gray-800 mb-2">Description</h2><div class="prose-styles text-gray-600">${product.description}</div></div></div></div>`;
+            container.innerHTML = productHTML;
+            fbq('track', 'ViewContent', { content_name: product.name, content_ids: [product._id], content_type: 'product', value: product.price, currency: 'INR' });
+            changeMedia(0);
+            lucide.createIcons();
+        }
+
+        function displayRelatedProducts(products) {
+            const section = document.getElementById('related-products-section');
+            const grid = document.getElementById('related-products-grid');
+            if (!products || products.length === 0) return;
+            grid.innerHTML = '';
+            products.forEach(product => { const imageUrl = (product.media && product.media.length > 0) ? product.media[0].url : 'https://placehold.co/600x750/E2E8F0/111827?text=Image'; const cardHTML = `<a href="./product.html?id=${product._id}" class="group"><div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200"><img src="${imageUrl}" alt="${product.name}" class="h-full w-full object-cover object-center group-hover:opacity-75"></div><h3 class="mt-4 text-sm text-gray-700">${product.name}</h3><p class="mt-1 text-lg font-medium text-gray-900">₹${product.price.toFixed(2)}</p></a>`; grid.innerHTML += cardHTML; });
+            section.classList.remove('hidden');
+        }
+
+        function changeMedia(index) {
+            const mainDisplay = document.getElementById('main-media-display');
+            if (!currentProduct || !currentProduct.media || !currentProduct.media[index]) return;
+            const mediaItem = currentProduct.media[index];
+            if (mediaItem.type === 'image') { mainDisplay.innerHTML = `<img src="${mediaItem.url}" alt="${currentProduct.name}" class="w-full h-full object-cover rounded-lg shadow-md">`; } else { const videoId = mediaItem.url.split('v=')[1] || mediaItem.url.split('/').pop(); mainDisplay.innerHTML = `<div class="aspect-w-16 aspect-h-9"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-md"></iframe></div>`; }
+            document.querySelectorAll('.thumbnail').forEach((el, i) => { el.classList.toggle('active', i === index); });
+        }
+        
+        function updateQuantity(change) { const quantityEl = document.getElementById('quantity-display'); let currentQuantity = parseInt(quantityEl.textContent); if (currentQuantity + change >= 1) { quantityEl.textContent = currentQuantity + change; } }
+        function getCart() { return JSON.parse(localStorage.getItem('moreTrendzCart')) || []; }
+        function saveCart(cart) { localStorage.setItem('moreTrendzCart', JSON.stringify(cart)); updateCartIcon(); }
+        
+        function addToCart() {
+            if (!currentProduct) return;
+            
+            // --- FIXED: Changed productToAdd to currentProduct ---
+            fbq('track', 'AddToCart', {
+                content_name: currentProduct.name,
+                content_ids: [currentProduct._id],
+                content_type: 'product',
+                value: currentProduct.price,
+                currency: 'INR'
+            });
+            
+            const quantity = parseInt(document.getElementById('quantity-display').textContent);
+            let cart = getCart();
+            const existingProductIndex = cart.findIndex(item => item._id === currentProduct._id);
+            if (existingProductIndex !== -1) { 
+                cart[existingProductIndex].quantity += quantity; 
+            } else { 
+                const cartItem = { _id: currentProduct._id, name: currentProduct.name, price: currentProduct.price, imageURL: currentProduct.media[0].url, quantity: quantity }; 
+                cart.push(cartItem); 
+            }
+            saveCart(cart);
+            showToast(`${quantity} x ${currentProduct.name} added to cart!`);
+        }
+
+        function buyNow(method) {
+            if (!currentProduct) return;
+            localStorage.removeItem('moreTrendzDiscount');
+            if (method === 'Online') { localStorage.setItem('moreTrendzPrepaidDiscount', 'true'); }
+            const quantity = parseInt(document.getElementById('quantity-display').textContent);
+            const cart = [{ _id: currentProduct._id, name: currentProduct.name, price: currentProduct.price, imageURL: currentProduct.media[0].url, quantity: quantity }];
+            saveCart(cart);
+            window.location.href = './checkout.html';
+        }
+
+        function updateCartIcon() { const cart = getCart(); const cartCountElement = document.getElementById('cart-count'); const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); cartCountElement.textContent = totalItems; }
+    </script>
+        <script src="/js/main.js" defer></script>
+</body>
+</html>

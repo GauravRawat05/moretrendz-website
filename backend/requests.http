@@ -1,0 +1,10 @@
+### CREATE A NEW PRODUCT
+POST https://moretrendz-backend.onrender.com/api/products
+Content-Type: application/json
+
+{
+  "name": "Oversized Graphic Tee",
+  "description": "A comfortable, stylish oversized t-shirt with a unique back print. Made from 100% premium cotton.",
+  "price": 48,
+  "imageURL": "https://placehold.co/600x750/E2E8F0/111827?text=Tee"
+}

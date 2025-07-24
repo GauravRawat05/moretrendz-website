@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login - MoreTrendz</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      width: 300px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <input type="email" id="adminEmail" placeholder="Email" required />
+    <input type="password" id="adminPassword" placeholder="Password" required />
+    <button onclick="login()">Login</button>
+    <div class="error" id="errorBox"></div>
+  </div>
+
+  <script>
+    async function login() {
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+      const errorBox = document.getElementById('errorBox');
+
+      try {
+        const response = await fetch('https://moretrendz-backend.onrender.com/api/admin-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem('adminToken', data.token);
+          window.location.href = 'admin-dashboard.html';
+        } else {
+          errorBox.innerText = data.message || 'Invalid login';
+        }
+
+      } catch (error) {
+        errorBox.innerText = 'Something went wrong!';
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
