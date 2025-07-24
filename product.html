@@ -96,7 +96,13 @@
         }
 
         let currentProduct = null;
-        document.addEventListener('DOMContentLoaded', () => { fetchProductDetails(); updateCartIcon(); lucide.createIcons(); });
+        function initializePageScripts() {
+            fetchProductDetails();
+            updateCartIcon();
+            // lucide.createIcons() is likely already being called in main.js after partials load,
+            // so you may not need it here, but it's safe to leave it.
+            lucide.createIcons();
+        }
 
         async function fetchProductDetails() {
             const container = document.getElementById('product-container');
