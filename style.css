@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add your custom CSS for consistent product images here */
+.product-card .aspect-w-1.aspect-h-1 {
+    position: relative;
+    padding-bottom: 100%; /* This is the trick for a 1:1 aspect ratio */
+}
+
+.product-card img {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    /* 'cover' will fill the space and crop bits (best for products) */
+    object-fit: cover; 
+}
