@@ -3,6 +3,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+const { isAdmin } = require('../middleware/adminAuthMiddleware'); // <-- ADD THIS LINE
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@moretrendz.online';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'GSRHR87H7313';
@@ -20,8 +21,7 @@ router.post('/admin-login', (req, res) => {
   res.status(401).json({ message: 'Invalid credentials' });
 });
 
-// --- UPDATE THIS ROUTE ---
-// The complex logic is now replaced by the simple isAdmin middleware
+// The 'isAdmin' function is now defined because of the import at the top
 router.get('/admin-protected', isAdmin, (req, res) => {
   res.json({ message: `Welcome Admin: ${req.user.email}` });
 });
