@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Review = require('../models/Review');
 const { isAdmin } = require('./adminAuthMiddleware');
+const { isAdmin } = require('../middleware/adminAuthMiddleware');
 
 // Add this to backend/routes/reviewRoutes.js
 // Make sure you import your admin authentication middleware, e.g., const { isAdmin } = require('./adminAuthMiddleware');
