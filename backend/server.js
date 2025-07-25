@@ -52,12 +52,14 @@ const aiRoutes = require('./routes/aiRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const discountRoutes = require('./routes/discountRoutes');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 app.use('/api/products', productRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/discounts', discountRoutes);
 app.use('/api', adminAuthRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // --- Server + DB Startup ---
 const PORT = process.env.PORT || 5000;

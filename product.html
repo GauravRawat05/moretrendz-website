@@ -59,6 +59,14 @@
         <div id="product-container">
             <p id="loading-message" class="text-center text-gray-500">Loading product...</p>
         </div>
+        <section id="reviews-section" class="py-16 sm:py-24 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+                <h2 class="text-3xl font-bold text-center tracking-tight text-black">Customer Reviews</h2>
+                <div id="reviews-list" class="mt-12 space-y-8">
+                    <p id="no-reviews-message" class="text-center text-gray-500">Be the first to review this product!</p>
+                </div>
+            </div>
+        </section>
         <div id="related-products-section" class="mt-16 pt-8 border-t hidden">
             <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">You Might Also Like</h2>
             <div id="related-products-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"></div>
@@ -118,12 +126,14 @@
                 currentProduct = data.product;
                 loadingMessage.style.display = 'none';
                 displayProduct(data.product);
+                fetchReviews(productId); // This will load the reviews after the product details are fetched.
                 displayRelatedProducts(data.relatedProducts);
             } catch (error) {
                 console.error('Error fetching product details:', error);
                 container.innerHTML = `<p class="text-center text-red-500">Error: ${error.message}. Please try again.</p>`;
             }
         }
+// In the displayProduct function's HTML template
 
         function displayProduct(product) {
             const container = document.getElementById('product-container');
@@ -131,12 +141,59 @@
             product.media.forEach((item, index) => { thumbnailsHTML += `<div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMedia(${index})">${item.type === 'image' ? `<img src="${item.url}" alt="Thumbnail ${index + 1}" class="w-full h-20 object-cover rounded-md">` : `<div class="w-full h-20 bg-black flex items-center justify-center rounded-md"><i data-lucide="video" class="w-6 h-6 text-white"></i></div>`}</div>`; });
             let starsHTML = '';
             for(let i = 1; i <= 5; i++) { starsHTML += `<i data-lucide="star" class="w-5 h-5 ${i <= 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'}"></i>`; }
-            const productHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"><div class="flex flex-col-reverse md:flex-row gap-4"><div class="flex md:flex-col gap-2 overflow-x-auto md:overflow-x-hidden">${thumbnailsHTML}</div><div id="main-media-display" class="flex-1 aspect-w-1 aspect-h-1"></div></div><div class="flex flex-col justify-center"><h1 class="text-3xl lg:text-4xl font-bold text-gray-800">${product.name}</h1><div class="mt-4 flex items-center"><div class="flex items-center">${starsHTML}</div><a href="#" class="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">22 reviews</a></div><p class="text-3xl text-gray-900 mt-4">₹${product.price.toFixed(2)}</p><div class="mt-6 border-t pt-6"><div class="flex items-center space-x-4 mb-4"><label class="font-medium">Quantity:</label><div class="flex items-center border rounded-md"><button onclick="updateQuantity(-1)" class="px-3 py-1 text-lg">-</button><span id="quantity-display" class="px-4 py-1">1</span><button onclick="updateQuantity(1)" class="px-3 py-1 text-lg">+</button></div></div><button onclick="addToCart()" class="w-full bg-gray-800 text-white font-bold py-3 px-8 rounded-md hover:bg-black transition-colors mb-3">Add to Cart</button><div class="grid grid-cols-2 gap-3"><button onclick="buyNow('COD')" class="w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-md hover:bg-blue-700 transition-colors">Buy with COD</button><button onclick="buyNow('Online')" class="w-full bg-green-600 text-white font-bold py-3 px-8 rounded-md hover:bg-green-700 transition-colors">Prepaid (15% OFF)</button></div></div><div class="mt-8 border-t pt-6"><h2 class="text-lg font-semibold text-gray-800 mb-2">Description</h2><div class="prose-styles text-gray-600">${product.description}</div></div></div></div>`;
+            const productHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"><div class="flex flex-col-reverse md:flex-row gap-4"><div class="flex md:flex-col gap-2 overflow-x-auto md:overflow-x-hidden">${thumbnailsHTML}</div><div id="main-media-display" class="flex-1 aspect-w-1 aspect-h-1"></div></div><div class="flex flex-col justify-center"><h1 class="text-3xl lg:text-4xl font-bold text-gray-800">${product.name}</h1><div class="mt-4 flex items-center"><div class="flex items-center">${starsHTML}</div><a href="#" class="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">22 reviews</a></div><p class="text-3xl text-gray-900 mt-4">₹${product.price.toFixed(2)}</p><div class="mt-6 border-t pt-6"><div class="flex items-center space-x-4 mb-4"><label class="font-medium">Quantity:</label><div class="flex items-center border rounded-md"><button onclick="updateQuantity(-1)" class="px-3 py-1 text-lg">-</button><span id="quantity-display" class="px-4 py-1">1</span><button onclick="updateQuantity(1)" class="px-3 py-1 text-lg">+</button></div></div><button onclick="addToCart()" class="w-full bg-gray-800 text-white font-bold py-3 px-8 rounded-md hover:bg-black transition-colors mb-3">Add to Cart</button><div class="grid grid-cols-2 gap-3"><button onclick="buyNow('COD')" class="w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-md hover:bg-blue-700 transition-colors">Buy with COD</button><button onclick="buyNow('Online')" class="w-full bg-green-600 text-white font-bold py-3 px-8 rounded-md hover:bg-green-700 transition-colors">Prepaid (15% OFF)</button></div></div><div class="mt-8 border-t pt-6"><h2 class="text-lg font-semibold text-gray-800 mb-2">Description</h2><div class="prose-styles text-gray-600">${product.description}</div></div></div></div><a href="#reviews-section" id="review-count-link" class="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"></a>`;
             container.innerHTML = productHTML;
             fbq('track', 'ViewContent', { content_name: product.name, content_ids: [product._id], content_type: 'product', value: product.price, currency: 'INR' });
             changeMedia(0);
             lucide.createIcons();
         }
+
+        // This function creates the star rating HTML
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<svg class="w-5 h-5 ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.445a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.367-2.445a1 1 0 00-1.175 0l-3.367 2.445c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.049 2.927z"/></svg>`;
+            }
+            return `<div class="flex items-center">${stars}</div>`;
+        }
+
+        async function fetchReviews(productId) {
+            const reviewsList = document.getElementById('reviews-list');
+            const noReviewsMessage = document.getElementById('no-reviews-message');
+            try {
+                const response = await fetch(`/api/reviews/product/${productId}`);
+                const reviews = await response.json();
+
+                        // --- ADD THIS LOGIC ---
+                if (reviewCountLink) {
+                reviewCountLink.textContent = `${reviews.length} reviews`;
+                }
+
+                if (reviews.length > 0) {
+                    noReviewsMessage.style.display = 'none';
+                    reviewsList.innerHTML = ''; // Clear existing
+                    reviews.forEach(review => {
+                        const reviewCard = `
+                            <div class="p-6 bg-white rounded-lg shadow">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-lg font-bold">${review.author}</p>
+                                    ${renderStars(review.rating)}
+                                </div>
+                                <p class="mt-4 text-gray-600">${review.text}</p>
+                            </div>
+                        `;
+                        reviewsList.innerHTML += reviewCard;
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to fetch reviews:", error);
+                reviewsList.innerHTML = '<p class="text-center text-red-500">Could not load reviews.</p>';
+            }
+        }
+
+        // When your page loads the product, call fetchReviews with the product ID.
+        // Example: const productId = new URLSearchParams(window.location.search).get('id');
+        // fetchReviews(productId);
 
         function displayRelatedProducts(products) {
             const section = document.getElementById('related-products-section');
@@ -151,7 +208,7 @@
             const mainDisplay = document.getElementById('main-media-display');
             if (!currentProduct || !currentProduct.media || !currentProduct.media[index]) return;
             const mediaItem = currentProduct.media[index];
-            if (mediaItem.type === 'image') { mainDisplay.innerHTML = `<img src="${mediaItem.url}" alt="${currentProduct.name}" class="w-full h-full object-cover rounded-lg shadow-md">`; } else { const videoId = mediaItem.url.split('v=')[1] || mediaItem.url.split('/').pop(); mainDisplay.innerHTML = `<div class="aspect-w-16 aspect-h-9"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-md"></iframe></div>`; }
+            if (mediaItem.type === 'image') { mainDisplay.innerHTML = `<img src="${mediaItem.url}" alt="${currentProduct.name}" class="w-full h-full object-cover rounded-lg shadow-md">`; } else { const videoId = mediaItem.url.split('v=')[1] || mediaItem.url.split('/').pop(); /* In the changeMedia function */ mainDisplay.innerHTML = `<div class="aspect-w-16 aspect-h-9"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-md"></iframe></div>`; }
             document.querySelectorAll('.thumbnail').forEach((el, i) => { el.classList.toggle('active', i === index); });
         }
         
