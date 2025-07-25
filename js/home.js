@@ -1,13 +1,28 @@
-// --- Facebook Pixel Code ---
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1774275048953349');
-fbq('track', 'PageView');
+// STEP 3: Lazy-load the Facebook Pixel script to improve performance.
+function lazyLoadFacebookPixel() {
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1774275048953349');
+    fbq('track', 'PageView');
+}
+
+// A function to trigger the pixel load on the first user interaction.
+const triggerPixelLoad = () => {
+    lazyLoadFacebookPixel();
+    // Remove the event listeners so it only runs once.
+    window.removeEventListener('scroll', triggerPixelLoad);
+    window.removeEventListener('mousemove', triggerPixelLoad);
+    window.removeEventListener('touchstart', triggerPixelLoad);
+};
+
+// Listen for the first interaction.
+window.addEventListener('scroll', triggerPixelLoad, { once: true });
+window.addEventListener('mousemove', triggerPixelLoad, { once: true });
+window.addEventListener('touchstart', triggerPixelLoad, { once: true });
 
 
-// --- Homepage Specific Logic ---
+// --- Homepage Specific Logic (The rest of your code is unchanged) ---
 let allProducts = [];
 
-// --- Global Functions (can be accessed by other scripts if needed) ---
 window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
 
 window.updateCartIcon = () => { 
@@ -34,7 +49,9 @@ window.showToast = (message, type = 'success') => {
         toastIconElement.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6"></i>';
         toastIconElement.className = 'text-red-500';
     }
-    lucide.createIcons(); // Assumes lucide is loaded
+    if (window.lucide) {
+      lucide.createIcons();
+    }
     toastElement.classList.remove('hidden');
     toastElement.classList.add('show', 'flex');
     toastTimeout = setTimeout(() => {
@@ -120,13 +137,15 @@ const saveCart = (cart) => {
 window.addToCart = (productId) => {
     const productToAdd = allProducts.find(p => p._id === productId);
     if (!productToAdd) return;
-    fbq('track', 'AddToCart', {
-        content_name: productToAdd.name,
-        content_ids: [productToAdd._id],
-        content_type: 'product',
-        value: productToAdd.price,
-        currency: 'INR'
-    });
+    if (typeof fbq === 'function') {
+      fbq('track', 'AddToCart', {
+          content_name: productToAdd.name,
+          content_ids: [productToAdd._id],
+          content_type: 'product',
+          value: productToAdd.price,
+          currency: 'INR'
+      });
+    }
     let cart = window.getCart();
     const existingProductIndex = cart.findIndex(item => item._id === productId);
     if (existingProductIndex !== -1) {
@@ -163,8 +182,6 @@ window.buyNowPrepaid = (productId) => {
     window.location.href = './checkout.html';
 };
 
-// --- This function will be called by main.js after the page is ready ---
-// We add it to the window object so main.js can find it.
 window.initializePageScripts = () => {
     fetchProducts();
     setupFAQ();
