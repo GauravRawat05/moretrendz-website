@@ -16,7 +16,6 @@
         .thumbnail { cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
         .thumbnail.active { border-color: #000000; }
         .thumbnail:hover { border-color: #9ca3af; }
-        /* Star rating input styles */
         .rating { display: inline-block; }
         .rating input { display: none; }
         .rating label { float: right; cursor: pointer; color: #d1d5db; transition: color 0.2s; }
@@ -34,13 +33,12 @@
 
         <section id="reviews-section" class="py-16 sm:py-24 bg-gray-50">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
-                <h2 class="text-3xl font-bold text-center tracking-tight text-black">Customer Reviews</h2>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-black">Customer Reviews</h2>
+                    <button id="show-review-form-btn" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">Write a Review</button>
+                </div>
                 
-                <div id="reviews-list" class="mt-12 space-y-8">
-                    </div>
-                
-                <div id="review-form-container" class="hidden mt-12">
-                    <p class="text-center text-gray-600 mb-4">There are no reviews yet. Be the first to share your thoughts!</p>
+                <div id="review-form-container" class="hidden mt-8">
                     <form id="add-review-form" class="bg-white p-6 rounded-lg shadow-md space-y-4">
                         <h3 class="text-lg font-semibold">Write a review</h3>
                         <div>
@@ -64,6 +62,9 @@
                         <button type="submit" class="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800">Submit Review</button>
                     </form>
                 </div>
+
+                <div id="reviews-list" class="mt-12 space-y-8">
+                    </div>
             </div>
         </section>
 
@@ -92,7 +93,6 @@
                 const response = await fetch(`https://moretrendz-backend.onrender.com/api/products/${productId}`);
                 if (!response.ok) throw new Error('Product not found');
                 const data = await response.json();
-                if (!data.product || !data.product.media || data.product.media.length === 0) { throw new Error('Product data is invalid or missing media.'); }
                 currentProduct = data.product;
                 loadingMessage.style.display = 'none';
                 displayProduct(data.product);
@@ -105,6 +105,7 @@
         }
 
         function displayProduct(product) {
+            // ... (This function is unchanged)
             const container = document.getElementById('product-container');
             let thumbnailsHTML = '';
             product.media.forEach((item, index) => { thumbnailsHTML += `<div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMedia(${index})">${item.type === 'image' ? `<img src="${item.url}" alt="Thumbnail ${index + 1}" class="w-full h-20 object-cover rounded-md">` : `<div class="w-full h-20 bg-black flex items-center justify-center rounded-md"><i data-lucide="video" class="w-6 h-6 text-white"></i></div>`}</div>`; });
@@ -115,6 +116,7 @@
         }
 
         function renderStars(rating) {
+            // ... (This function is unchanged)
             let stars = '';
             for (let i = 1; i <= 5; i++) { stars += `<svg class="w-5 h-5 ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.445a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.367-2.445a1 1 0 00-1.175 0l-3.367 2.445c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.049 2.927z"/></svg>`; }
             return `<div class="flex items-center">${stars}</div>`;
@@ -123,8 +125,14 @@
         async function fetchReviews(productId) {
             const reviewsList = document.getElementById('reviews-list');
             const reviewFormContainer = document.getElementById('review-form-container');
+            const showReviewFormBtn = document.getElementById('show-review-form-btn');
             const reviewCountLink = document.getElementById('review-count-link');
             const starsContainer = document.getElementById('product-stars-container');
+
+            // NEW: Event listener for the "Write a Review" button
+            showReviewFormBtn.addEventListener('click', () => {
+                reviewFormContainer.classList.toggle('hidden');
+            });
 
             try {
                 const response = await fetch(`https://moretrendz-backend.onrender.com/api/reviews/product/${productId}`);
@@ -133,13 +141,11 @@
                 
                 if (reviewCountLink) { reviewCountLink.textContent = `${reviews.length} reviews`; }
                 
+                reviewsList.innerHTML = ''; // Clear previous content
                 if (reviews.length === 0) {
-                    reviewsList.innerHTML = '';
-                    reviewFormContainer.classList.remove('hidden');
+                    reviewsList.innerHTML = `<p class="text-center text-gray-500">There are no reviews yet.</p>`;
                     if (starsContainer) starsContainer.innerHTML = '<span class="text-sm text-gray-500">No reviews yet</span>';
                 } else {
-                    reviewFormContainer.classList.add('hidden');
-                    reviewsList.innerHTML = '';
                     let totalRating = 0;
                     reviews.forEach(review => {
                         totalRating += review.rating;
@@ -167,20 +173,23 @@
                 if (!rating) { alert('Please select a star rating.'); return; }
 
                 try {
-                    const response = await fetch('https://moretrendz-backend.onrender.com/api/reviews', { // Note: a new general endpoint might be needed
+                    const response = await fetch('https://moretrendz-backend.onrender.com/api/reviews', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ productId, author, rating, text })
                     });
                     if (!response.ok) throw new Error('Failed to submit review.');
                     alert('Thank you! Your review has been submitted.');
-                    fetchReviews(productId);
+                    form.reset();
+                    document.getElementById('review-form-container').classList.add('hidden'); // Hide form after submission
+                    fetchReviews(productId); // Refresh the reviews list
                 } catch (error) {
                     alert(error.message);
                 }
             }
         });
 
+        // --- Other functions are unchanged ---
         function displayRelatedProducts(products) {
             const section = document.getElementById('related-products-section');
             const grid = document.getElementById('related-products-grid');
@@ -189,7 +198,6 @@
             products.forEach(product => { const imageUrl = (product.media && product.media.length > 0) ? product.media[0].url : 'https://placehold.co/600x750/E2E8F0/111827?text=Image'; const cardHTML = `<a href="./product.html?id=${product._id}" class="group"><div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200"><img src="${imageUrl}" alt="${product.name}" class="h-full w-full object-cover object-center group-hover:opacity-75"></div><h3 class="mt-4 text-sm text-gray-700">${product.name}</h3><p class="mt-1 text-lg font-medium text-gray-900">₹${product.price.toFixed(2)}</p></a>`; grid.innerHTML += cardHTML; });
             section.classList.remove('hidden');
         }
-
         function changeMedia(index) {
             const mainDisplay = document.getElementById('main-media-display');
             if (!currentProduct || !currentProduct.media || !currentProduct.media[index]) return;
@@ -197,19 +205,38 @@
             if (mediaItem.type === 'image') { mainDisplay.innerHTML = `<img src="${mediaItem.url}" alt="${currentProduct.name}" class="w-full h-full object-cover rounded-lg shadow-md">`; } else { const videoId = mediaItem.url.split('v=')[1]?.split('&')[0] || mediaItem.url.split('/').pop(); mainDisplay.innerHTML = `<div class="aspect-w-16 aspect-h-9"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-md"></iframe></div>`; }
             document.querySelectorAll('.thumbnail').forEach((el, i) => { el.classList.toggle('active', i === index); });
         }
-        
         function updateQuantity(change) { const quantityEl = document.getElementById('quantity-display'); let currentQuantity = parseInt(quantityEl.textContent); if (currentQuantity + change >= 1) { quantityEl.textContent = currentQuantity + change; } }
-        
-        function addToCart() {
-            if (!currentProduct) return;
-            const quantity = parseInt(document.getElementById('quantity-display').textContent);
-            let cart = JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
-            const existingProductIndex = cart.findIndex(item => item._id === currentProduct._id);
-            if (existingProductIndex !== -1) { cart[existingProductIndex].quantity += quantity; } else { cart.push({ _id: currentProduct._id, name: currentProduct.name, price: currentProduct.price, imageURL: currentProduct.media[0].url, quantity: quantity }); }
-            localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
-            window.parent.postMessage({ type: 'cartUpdated', message: `${quantity} x ${currentProduct.name} added to cart!` }, '*');
-        }
+function addToCart() {
+    if (!currentProduct) return;
+    const quantity = parseInt(document.getElementById('quantity-display').textContent);
+    
+    // Get the existing cart from localStorage, or create an empty one
+    let cart = JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
+    
+    // Check if the product is already in the cart
+    const existingProductIndex = cart.findIndex(item => item._id === currentProduct._id);
 
+    if (existingProductIndex !== -1) {
+        // If it exists, just increase the quantity
+        cart[existingProductIndex].quantity += quantity;
+    } else {
+        // If it's a new product, add it to the cart
+        cart.push({
+            _id: currentProduct._id,
+            name: currentProduct.name,
+            price: currentProduct.price,
+            imageURL: currentProduct.media[0].url,
+
+            quantity: quantity
+        });
+    }
+
+    // Save the updated cart back to localStorage
+    localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
+
+    // Send the message to main.js to show the notification
+    window.parent.postMessage({ type: 'cartUpdated', message: `${quantity} x ${currentProduct.name} added to cart!` }, '*');
+}
         function buyNow(method) {
             if (!currentProduct) return;
             localStorage.removeItem('moreTrendzDiscount');

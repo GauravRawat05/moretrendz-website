@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Function to fetch and inject HTML content
     const loadComponent = (selector, url) => {
-        return fetch(url) // Return the fetch promise
+        return fetch(url)
             .then(response => {
                 if (!response.ok) throw new Error(`Network response was not ok for ${url}`);
                 return response.text();
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error(`Error loading component from ${url}:`, error));
     };
 
-    // --- Global Header and Search Logic ---
+    // Global Header and Search Logic
     const setupHeader = () => {
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -40,17 +40,29 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
-    // --- LOAD COMPONENTS AND THEN SETUP LOGIC ---
     // Use Promise.all to wait for ALL partials to load
     Promise.all([
         loadComponent('#header-placeholder', '/partials/header.html'),
         loadComponent('#footer-placeholder', '/partials/footer.html'),
-        loadComponent('#common-elements-placeholder', '/partials/common-elements.html') // <-- ADD THIS LINE
+        loadComponent('#common-elements-placeholder', '/partials/common-elements.html')
     ]).then(() => {
-        // This code runs ONLY AFTER ALL HTML is on the page
+        // This code runs ONLY AFTER ALL HTML partials are on the page
+
+        // 1. Setup header event listeners
         setupHeader();
 
-                // --- PASTE THE TOAST NOTIFICATION CODE HERE ---
+        // 2. Define global helper functions
+        window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
+
+        window.updateCartIcon = () => {
+            const cart = window.getCart();
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartCountElement.textContent = totalItems;
+            }
+        };
+
         const toastElement = document.getElementById('toast-notification');
         const toastMessageElement = document.getElementById('toast-message');
         const toastIconElement = document.getElementById('toast-icon');
@@ -81,11 +93,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 }, 500);
             }, 4000);
         };
-        // --- END OF PASTED CODE ---
         
-        if (typeof updateCartIcon === 'function') {
-            updateCartIcon();
-        }
+        // 3. Setup the message listener (MOVED HERE)
+        window.addEventListener('message', function(event) {
+            // A basic security check
+            if (event.origin.includes('moretrendz.online') || event.origin.includes('localhost') || event.origin.includes('127.0.0.1')) {
+                if (event.data.type === 'cartUpdated') {
+                    window.showToast(event.data.message, 'success');
+                    window.updateCartIcon(); // Update the cart icon count
+                }
+            }
+        });
+
+        // 4. Run initial setup scripts
+        window.updateCartIcon(); // Update cart on initial load
         
         if (typeof initializePageScripts === 'function') {
             initializePageScripts();
@@ -95,16 +116,4 @@ document.addEventListener("DOMContentLoaded", function() {
             window.lucide.createIcons();
         }
     });
-});
-
-// Listen for messages from other pages (like the product page)
-window.addEventListener('message', function(event) {
-    // A basic security check, you can make this more specific if needed
-    if (event.origin.includes('moretrendz.online') || event.origin.includes('localhost')) {
-        if (event.data.type === 'cartUpdated') {
-            // Assuming showToast is globally available from common-elements.js or main.js
-            showToast(event.data.message, 'success');
-            updateCartIcon(); // Also update the cart icon count
-        }
-    }
 });
