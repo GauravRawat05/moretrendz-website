@@ -49,6 +49,39 @@ document.addEventListener("DOMContentLoaded", function() {
     ]).then(() => {
         // This code runs ONLY AFTER ALL HTML is on the page
         setupHeader();
+
+                // --- PASTE THE TOAST NOTIFICATION CODE HERE ---
+        const toastElement = document.getElementById('toast-notification');
+        const toastMessageElement = document.getElementById('toast-message');
+        const toastIconElement = document.getElementById('toast-icon');
+        let toastTimeout;
+
+        window.showToast = (message, type = 'success') => {
+            if (!toastElement || !toastMessageElement || !toastIconElement) {
+                console.error('Toast elements not found!');
+                return;
+            }
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastMessageElement.textContent = message;
+            if (type === 'success') {
+                toastIconElement.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
+                toastIconElement.className = 'text-green-500';
+            } else {
+                toastIconElement.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6"></i>';
+                toastIconElement.className = 'text-red-500';
+            }
+            if (window.lucide) lucide.createIcons();
+            toastElement.classList.remove('hidden');
+            toastElement.classList.add('show', 'flex');
+            toastTimeout = setTimeout(() => {
+                toastElement.classList.remove('show');
+                setTimeout(() => {
+                    toastElement.classList.add('hidden');
+                    toastElement.classList.remove('flex');
+                }, 500);
+            }, 4000);
+        };
+        // --- END OF PASTED CODE ---
         
         if (typeof updateCartIcon === 'function') {
             updateCartIcon();
@@ -62,4 +95,16 @@ document.addEventListener("DOMContentLoaded", function() {
             window.lucide.createIcons();
         }
     });
+});
+
+// Listen for messages from other pages (like the product page)
+window.addEventListener('message', function(event) {
+    // A basic security check, you can make this more specific if needed
+    if (event.origin.includes('moretrendz.online') || event.origin.includes('localhost')) {
+        if (event.data.type === 'cartUpdated') {
+            // Assuming showToast is globally available from common-elements.js or main.js
+            showToast(event.data.message, 'success');
+            updateCartIcon(); // Also update the cart icon count
+        }
+    }
 });

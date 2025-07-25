@@ -34,35 +34,6 @@ window.updateCartIcon = () => {
     }
 };
 
-const toastElement = document.getElementById('toast-notification');
-const toastMessageElement = document.getElementById('toast-message');
-const toastIconElement = document.getElementById('toast-icon');
-let toastTimeout;
-
-window.showToast = (message, type = 'success') => {
-    if (toastTimeout) clearTimeout(toastTimeout);
-    toastMessageElement.textContent = message;
-    if (type === 'success') {
-        toastIconElement.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
-        toastIconElement.className = 'text-green-500';
-    } else {
-        toastIconElement.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6"></i>';
-        toastIconElement.className = 'text-red-500';
-    }
-    if (window.lucide) {
-      lucide.createIcons();
-    }
-    toastElement.classList.remove('hidden');
-    toastElement.classList.add('show', 'flex');
-    toastTimeout = setTimeout(() => {
-        toastElement.classList.remove('show');
-        setTimeout(() => {
-            toastElement.classList.add('hidden');
-            toastElement.classList.remove('flex');
-        }, 500);
-    }, 4000);
-};
-
 const setupFAQ = () => { 
     const faqQuestions = document.querySelectorAll('.faq-question'); 
     faqQuestions.forEach(question => { 

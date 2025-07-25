@@ -31,6 +31,29 @@ router.post('/admin', isAdmin, async (req, res) => { // Uncomment isAdmin to pro
     }
 });
 
+// --- NEW PUBLIC ROUTE for customer review submissions ---
+router.post('/', async (req, res) => {
+    const { productId, author, rating, text } = req.body;
+
+    // Basic validation
+    if (!productId || !author || !rating || !text) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    try {
+        const newReview = new Review({
+            productId,
+            author,
+            rating,
+            text
+        });
+        await newReview.save();
+        res.status(201).json({ message: 'Review submitted successfully!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error while submitting review.' });
+    }
+});
+
 // GET all reviews for a specific product
 router.get('/product/:productId', async (req, res) => {
     try {
