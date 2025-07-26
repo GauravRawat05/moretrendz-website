@@ -23,9 +23,10 @@
         .rating input:checked ~ label, .rating label:hover, .rating label:hover ~ label { color: #f59e0b; }
     </style>
 </head>
-<body class="bg-white flex flex-col min-h-screen">
+<body class="bg-white">
     <div id="header-placeholder"></div>
 
+    <div class="flex flex-col min-h-screen">
     <main id="page-container" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
         <div id="product-container">
             <p id="loading-message" class="text-center text-gray-500">Loading product...</p>
@@ -75,6 +76,7 @@
     </main>
 
     <div id="footer-placeholder"></div>
+    </div>
 
     <script>
         let currentProduct = null;
