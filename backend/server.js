@@ -16,6 +16,7 @@ app.set('trust proxy', 1);
 // This list contains all the URLs that are allowed to make requests to your backend.
 const allowedOrigins = [
   'https://moretrendz.online',      // Your live frontend
+  'https://www.moretrendz.online',
   'http://localhost:5173'         // Your local Vite development server
 ];
 
