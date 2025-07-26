@@ -1,38 +1,9 @@
-// STEP 3: Lazy-load the Facebook Pixel script to improve performance.
-function lazyLoadFacebookPixel() {
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1774275048953349');
-    fbq('track', 'PageView');
-}
-
-// A function to trigger the pixel load on the first user interaction.
-const triggerPixelLoad = () => {
-    lazyLoadFacebookPixel();
-    // Remove the event listeners so it only runs once.
-    window.removeEventListener('scroll', triggerPixelLoad);
-    window.removeEventListener('mousemove', triggerPixelLoad);
-    window.removeEventListener('touchstart', triggerPixelLoad);
-};
-
-// Listen for the first interaction.
-window.addEventListener('scroll', triggerPixelLoad, { once: true });
-window.addEventListener('mousemove', triggerPixelLoad, { once: true });
-window.addEventListener('touchstart', triggerPixelLoad, { once: true });
-
-
-// --- Homepage Specific Logic (The rest of your code is unchanged) ---
+// --- Homepage Specific Logic ---
 let allProducts = [];
 
+// This function is defined in main.js now, but can be safely left here
+// as it won't interfere. Or you can remove it for extra cleanup.
 window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
-
-window.updateCartIcon = () => { 
-    const cart = window.getCart(); 
-    const cartCountElement = document.getElementById('cart-count'); 
-    if (cartCountElement) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); 
-        cartCountElement.textContent = totalItems; 
-    }
-};
 
 const setupFAQ = () => { 
     const faqQuestions = document.querySelectorAll('.faq-question'); 
@@ -102,12 +73,15 @@ const renderFeaturedProduct = (product) => {
 
 const saveCart = (cart) => {
     localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
-    window.updateCartIcon();
+    if (window.updateCartIcon) {
+        window.updateCartIcon();
+    }
 };
 
 window.addToCart = (productId) => {
     const productToAdd = allProducts.find(p => p._id === productId);
     if (!productToAdd) return;
+    
     if (typeof fbq === 'function') {
       fbq('track', 'AddToCart', {
           content_name: productToAdd.name,
@@ -117,6 +91,7 @@ window.addToCart = (productId) => {
           currency: 'INR'
       });
     }
+
     let cart = window.getCart();
     const existingProductIndex = cart.findIndex(item => item._id === productId);
     if (existingProductIndex !== -1) {
@@ -132,7 +107,10 @@ window.addToCart = (productId) => {
         cart.push(cartItem);
     }
     saveCart(cart);
-    window.showToast(`${productToAdd.name} has been added to your cart!`);
+    
+    if (window.showToast) {
+        window.showToast(`${productToAdd.name} has been added to your cart!`);
+    }
 };
 
 window.buyNowPrepaid = (productId) => {
@@ -153,6 +131,7 @@ window.buyNowPrepaid = (productId) => {
     window.location.href = './checkout.html';
 };
 
+// This function is called by main.js after the page is ready
 window.initializePageScripts = () => {
     fetchProducts();
     setupFAQ();
