@@ -34,23 +34,28 @@ router.post('/upload-image', isAdmin, upload.single('image'), async (req, res) =
     if (!req.file) {
         return res.status(400).json({ message: 'No image file uploaded.' });
     }
-
+    
     try {
-        const formData = new FormData();
-        formData.append('image', req.file.buffer.toString('base64')); // Send as base64
+        // The ImgBB API expects the image as a URL-encoded base64 string.
+        const imageAsBase64 = req.file.buffer.toString('base64');
+        const url = `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`;
+        const data = `image=${encodeURIComponent(imageAsBase64)}`;
 
-        const response = await axios.post(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`, formData, {
-            headers: formData.getHeaders()
+        const response = await axios.post(url, data, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         });
 
         if (response.data.success) {
             res.json({ success: true, url: response.data.data.url });
         } else {
-            throw new Error(response.data.error.message);
+            // This will pass any error message from ImgBB back to the frontend
+            throw new Error(response.data.error.message || 'Unknown error from image provider');
         }
     } catch (error) {
-        console.error('ImgBB upload error:', error.message);
-        res.status(500).json({ message: 'Error uploading image to provider.' });
+        console.error('ImgBB upload error:', error.response ? error.response.data : error.message);
+        res.status(500).json({ message: error.message || 'Error uploading image to provider.' });
     }
 });
 
