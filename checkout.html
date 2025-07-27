@@ -15,19 +15,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; }
-        
-        /* --- NEW: Toast Notification Styles --- */
-        #toast-notification {
-            position: fixed;
-            top: -100px; /* Start off-screen */
-            left: 50%;
-            transform: translateX(-50%);
-            transition: top 0.5s ease-in-out;
-            z-index: 1000;
-        }
-        #toast-notification.show {
-            top: 20px; /* Slide into view */
-        }
     </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -116,33 +103,7 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
     </div>
 
     <script>
-        // --- NEW: Toast Notification Logic ---
-        const toastElement = document.getElementById('toast-notification');
-        const toastMessageElement = document.getElementById('toast-message');
-        const toastIconElement = document.getElementById('toast-icon');
-        let toastTimeout;
-
-        function showToast(message, type = 'success') {
-            if (toastTimeout) clearTimeout(toastTimeout);
-            toastMessageElement.textContent = message;
-            if (type === 'success') {
-                toastIconElement.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
-                toastIconElement.className = 'text-green-500';
-            } else {
-                toastIconElement.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6"></i>';
-                toastIconElement.className = 'text-red-500';
-            }
-            lucide.createIcons();
-            toastElement.classList.remove('hidden');
-            toastElement.classList.add('show', 'flex');
-            toastTimeout = setTimeout(() => {
-                toastElement.classList.remove('show');
-                setTimeout(() => {
-                    toastElement.classList.add('hidden');
-                    toastElement.classList.remove('flex');
-                }, 500);
-            }, 4000);
-        }
+        // --- NEW: Toast Notification Logic in main.js---
 
         // --- Existing Page Logic ---
         const checkoutForm = document.getElementById('checkout-form');

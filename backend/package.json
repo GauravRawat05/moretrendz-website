@@ -16,11 +16,13 @@
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^8.0.1",
     "fast-csv": "^5.0.2",
+    "form-data": "^4.0.4",
     "google-auth-library": "^10.1.0",
     "googleapis": "^153.0.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.0.0",
+    "multer": "^2.0.2",
     "razorpay": "^2.8.6"
   }
 }

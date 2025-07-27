@@ -3,7 +3,6 @@ let allProducts = [];
 
 // This function is defined in main.js now, but can be safely left here
 // as it won't interfere. Or you can remove it for extra cleanup.
-window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
 
 const setupFAQ = () => { 
     const faqQuestions = document.querySelectorAll('.faq-question'); 

@@ -38,8 +38,7 @@ router.post('/', async (req, res) => {
         await Product.updateMany({}, { isFeatured: false });
     }
     const newProduct = new Product({ 
-        name, description, price, media, isFeatured,
-        rating: 4.5, numReviews: Math.floor(Math.random() * 100) + 1 
+        name, description, price, media, isFeatured
     });
     const savedProduct = await newProduct.save();
     res.status(201).json(savedProduct);
