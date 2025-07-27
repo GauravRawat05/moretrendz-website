@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const Discount = require('../models/Discount.js');
+const Discount = require('../models/discount.js');
 
 // --- CREATE A NEW DISCOUNT CODE (for Admin) ---
 // POST /api/discounts
