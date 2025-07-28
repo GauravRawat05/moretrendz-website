@@ -40,7 +40,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-
+    const setupFAQ = () => {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                question.classList.toggle('active');
+            });
+        });
+    };
     // Use Promise.all to wait for ALL partials to load
     Promise.all([
         loadComponent('#header-placeholder', '/partials/header.html'),
@@ -48,14 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loadComponent('#common-elements-placeholder', '/partials/common-elements.html')
     ]).then(() => {
         // This code runs ONLY AFTER ALL HTML partials are on the page
-            const setupFAQ = () => { 
-            const faqQuestions = document.querySelectorAll('.faq-question'); 
-            faqQuestions.forEach(question => { 
-                question.addEventListener('click', () => { 
-                    question.classList.toggle('active'); 
-                }); 
-            }); 
-        };
+
         // 1. Setup header event listeners
         setupHeader();
         setupFAQ();
