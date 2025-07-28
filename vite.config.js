@@ -2,16 +2,17 @@
 const { resolve } = require('path');
 const { defineConfig } = require('vite');
 const htmlInject = require('vite-plugin-html-inject');
+const vue = require('@vitejs/plugin-vue'); // <-- IMPORT vue using require
 
 module.exports = defineConfig({
   plugins: [
     htmlInject(),
+    vue(), // <-- ADD the vue plugin here
   ],
   build: {
     outDir: 'dist',
     rollupOptions: {
       input: {
-        // This is the new section that tells Vite about all your pages
         main: resolve(__dirname, 'index.html'),
         cart: resolve(__dirname, 'cart.html'),
         product: resolve(__dirname, 'product.html'),
