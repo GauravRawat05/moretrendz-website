@@ -138,6 +138,20 @@ router.get('/', async (req, res) => {
     }
 });
 
+// --- GET A SINGLE ORDER'S DETAILS ---
+router.get('/:id', async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.status(200).json(order);
+    } catch (error) {
+        console.error('Error fetching single order:', error);
+        res.status(500).json({ message: 'Failed to fetch order details' });
+    }
+});
+
 router.patch('/:id', async (req, res) => {
     try {
         const { paymentStatus } = req.body;

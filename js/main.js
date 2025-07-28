@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (event.origin.includes('moretrendz.online') || event.origin.includes('localhost') || event.origin.includes('127.0.0.1')) {
                 if (event.data.type === 'cartUpdated') {
                     window.showToast(event.data.message, 'success');
-                    window.showModal('Added to Cart!', event.data.message);
+                    //window.showModal('Added to Cart!', event.data.message);
                     window.updateCartIcon(); // Update the cart icon count
                 }
             }
