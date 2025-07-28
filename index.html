@@ -1,88 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- Start cookieyes banner --> <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/3987a96a6f82f080d050b24b/script.js"></script> <!-- End cookieyes banner -->
+    <!-- Start cookieyes banner -->
+    <script id="cookieyes" type="text/javascript"
+        src="https://cdn-cookieyes.com/client_data/3987a96a6f82f080d050b24b/script.js"></script>
+    <!-- End cookieyes banner -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Discover the latest trending and viral products at MoreTrendz. Your one-stop shop for cool gadgets, must-have toys, and unique finds, delivered to your door.">
+    <meta name="description"
+        content="Discover the latest trending and viral products at MoreTrendz. Your one-stop shop for cool gadgets, must-have toys, and unique finds, delivered to your door.">
     <meta name="facebook-domain-verification" content="quryuwkdqdr1elpw8o7kgodmtx672g" />
     <title>MoreTrendz - Find What's Trending</title>
-    
+
     <link rel="icon" type="image/png" href="/Favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="stylesheet" href="/style.css">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <style>
-        body { font-family: 'Montserrat', sans-serif; }
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; }
-        .faq-question.active + .faq-answer { max-height: 200px; }
-        .faq-icon { transition: transform 0.3s ease-in-out; }
-        .faq-question.active .faq-icon { transform: rotate(45deg); }
-        #toast-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); transition: top 0.5s ease-in-out; z-index: 1000; }
-        #toast-notification.show { top: 20px; }
-        #search-overlay { transition: opacity 0.3s ease-in-out; }
-        #search-overlay.hidden { pointer-events: none; }
-    </style>
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1774275046853349');
-fbq('track', 'PageView');
-</script>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
 
-<!-- End Meta Pixel Code -->
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .faq-question.active+.faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .faq-question.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        #toast-notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        #toast-notification.show {
+            top: 20px;
+        }
+
+        #search-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        #search-overlay.hidden {
+            pointer-events: none;
+        }
+    </style>
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1774275046853349');
+        fbq('track', 'PageView');
+    </script>
+
+    <!-- End Meta Pixel Code -->
 </head>
 
 <body class="bg-white">
     <div id="common-elements-placeholder"></div>
-        <noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
-/></noscript>
-    <div id="toast-notification" class="hidden items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow-lg" role="alert">
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1" /></noscript>
+    <div id="toast-notification"
+        class="hidden items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow-lg"
+        role="alert">
         <div id="toast-icon" class="text-green-500"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
         <div id="toast-message" class="pl-4 text-sm font-normal">Message goes here.</div>
     </div>
 
-    
+
 
     <div class="flex flex-col min-h-screen">
 
-    <header id="header-placeholder"></header>
-    
-    <main class="flex-grow">
-        <section id="hero-section" class="relative min-h-[80vh] bg-cover bg-center flex items-center text-white transition-all duration-500">
-            <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-            <div id="hero-content-container" class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
-                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight uppercase">Find What's Trending</h1>
-                <p class="mt-4 max-w-xl mx-auto md:mx-0 text-lg md:text-xl">The latest viral products, delivered to your door.</p>
-            </div>
-        </section>
+        <header id="header-placeholder"></header>
 
-        <section id="new-arrivals" class="py-16 sm:py-24">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold text-center tracking-tight text-black">New Arrivals</h2>
-                <div id="product-grid" class="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10"></div>
-            </div>
-        </section>
-        
-    <div id="faq-placeholder"></div>
-    </main>
-    
-    <footer id="footer-placeholder"></footer>
+        <main class="flex-grow">
+            <section id="hero-section"
+                class="relative min-h-[80vh] bg-cover bg-center flex items-center text-white transition-all duration-500">
+                <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+                <div id="hero-content-container"
+                    class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight uppercase">Find What's
+                        Trending</h1>
+                    <p class="mt-4 max-w-xl mx-auto md:mx-0 text-lg md:text-xl">The latest viral products, delivered to
+                        your door.</p>
+                </div>
+            </section>
+
+            <section id="new-arrivals" class="py-16 sm:py-24">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-3xl font-bold text-center tracking-tight text-black">New Arrivals</h2>
+                    <div id="product-grid"
+                        class="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10"></div>
+                </div>
+            </section>
+
+        </main>
+        <div id="faq-placeholder"></div>
+
+        <footer id="footer-placeholder"></footer>
     </div>
 
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script src="/js/main.js" type="module" defer></script>
     <script src="/js/home.js" type="module" defer></script>
 </body>
+
 </html>
