@@ -4,15 +4,6 @@ let allProducts = [];
 // This function is defined in main.js now, but can be safely left here
 // as it won't interfere. Or you can remove it for extra cleanup.
 
-const setupFAQ = () => { 
-    const faqQuestions = document.querySelectorAll('.faq-question'); 
-    faqQuestions.forEach(question => { 
-        question.addEventListener('click', () => { 
-            question.classList.toggle('active'); 
-        }); 
-    }); 
-};
-
 const fetchProducts = async () => {
     const productGrid = document.getElementById('product-grid');
     try {

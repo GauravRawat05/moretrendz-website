@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+
     // Use Promise.all to wait for ALL partials to load
     Promise.all([
         loadComponent('#header-placeholder', '/partials/header.html'),
@@ -47,9 +48,17 @@ document.addEventListener("DOMContentLoaded", function () {
         loadComponent('#common-elements-placeholder', '/partials/common-elements.html')
     ]).then(() => {
         // This code runs ONLY AFTER ALL HTML partials are on the page
-
+                const setupFAQ = () => { 
+            const faqQuestions = document.querySelectorAll('.faq-question'); 
+            faqQuestions.forEach(question => { 
+                question.addEventListener('click', () => { 
+                    question.classList.toggle('active'); 
+                }); 
+            }); 
+        };
         // 1. Setup header event listeners
         setupHeader();
+        setupFAQ();
 
         // --- NEW MODAL LOGIC ---
         const modalBackdrop = document.getElementById('generic-modal-backdrop');
@@ -125,6 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (event.origin.includes('moretrendz.online') || event.origin.includes('localhost') || event.origin.includes('127.0.0.1')) {
                 if (event.data.type === 'cartUpdated') {
                     window.showToast(event.data.message, 'success');
+                    window.showModal('Added to Cart!', event.data.message);
                     window.updateCartIcon(); // Update the cart icon count
                 }
             }
