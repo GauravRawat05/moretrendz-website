@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loadComponent('#common-elements-placeholder', '/partials/common-elements.html')
     ]).then(() => {
         // This code runs ONLY AFTER ALL HTML partials are on the page
-                const setupFAQ = () => { 
+            const setupFAQ = () => { 
             const faqQuestions = document.querySelectorAll('.faq-question'); 
             faqQuestions.forEach(question => { 
                 question.addEventListener('click', () => { 

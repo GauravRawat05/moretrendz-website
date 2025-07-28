@@ -123,6 +123,5 @@ window.buyNowPrepaid = (productId) => {
 
 // This function is called by main.js after the page is ready
 window.initializePageScripts = () => {
-    fetchProducts();
-    setupFAQ();
+    fetchProducts()
 };
