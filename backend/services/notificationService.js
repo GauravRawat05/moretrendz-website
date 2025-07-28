@@ -90,7 +90,28 @@ async function logOrderToGoogleSheet(order) {
     }
 }
 
+// Add this new function to notificationService.js
+async function sendContactFormNotification(formData) {
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+    const message = `
+📬 *New Contact Form Submission* 📬
+
+*Name:* ${formData.name}
+*Email:* ${formData.email}
+*Message:*
+${formData.message}
+    `;
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    try {
+        await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' });
+        console.log('Contact form notification sent to Telegram.');
+    } catch (error) {
+        console.error('Failed to send contact form Telegram notification:', error.message);
+    }
+}
+
 module.exports = {
     sendTelegramNotification,
-    logOrderToGoogleSheet // <-- UPDATED EXPORT
+    logOrderToGoogleSheet, // <-- UPDATED EXPORT
+    sendContactFormNotification
 };

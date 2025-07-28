@@ -1,6 +1,6 @@
 // File: js/main.js
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // Function to fetch and inject HTML content
     const loadComponent = (selector, url) => {
         return fetch(url)
@@ -51,6 +51,31 @@ document.addEventListener("DOMContentLoaded", function() {
         // 1. Setup header event listeners
         setupHeader();
 
+        // --- NEW MODAL LOGIC ---
+        const modalBackdrop = document.getElementById('generic-modal-backdrop');
+        const modalContent = document.getElementById('generic-modal-content');
+        const modalTitle = document.getElementById('generic-modal-title');
+        const modalMessage = document.getElementById('generic-modal-message');
+
+        window.showModal = (title, message) => {
+            if (!modalBackdrop) return;
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                modalBackdrop.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+        };
+
+        window.closeModal = () => {
+            if (!modalBackdrop) return;
+            modalBackdrop.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => modalBackdrop.classList.add('hidden'), 300);
+        };
+        // --- END OF NEW MODAL LOGIC ---
+
         // 2. Define global helper functions
         window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
 
@@ -93,9 +118,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 }, 500);
             }, 4000);
         };
-        
+
         // 3. Setup the message listener (MOVED HERE)
-        window.addEventListener('message', function(event) {
+        window.addEventListener('message', function (event) {
             // A basic security check
             if (event.origin.includes('moretrendz.online') || event.origin.includes('localhost') || event.origin.includes('127.0.0.1')) {
                 if (event.data.type === 'cartUpdated') {
@@ -107,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 4. Run initial setup scripts
         window.updateCartIcon(); // Update cart on initial load
-        
+
         if (typeof initializePageScripts === 'function') {
             initializePageScripts();
         }

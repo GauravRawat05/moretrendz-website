@@ -54,6 +54,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const discountRoutes = require('./routes/discountRoutes');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 app.use('/api/products', productRoutes);
 app.use('/api/ai', aiRoutes);
@@ -61,6 +62,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/discounts', discountRoutes);
 app.use('/api', adminAuthRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/contact', contactRoutes);
+
 
 // --- Server + DB Startup ---
 const PORT = process.env.PORT || 5000;

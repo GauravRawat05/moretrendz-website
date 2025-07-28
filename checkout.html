@@ -154,7 +154,7 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
                 discountDisplay.classList.add('hidden');
             }
             totalEl.textContent = `₹${total.toFixed(2)}`;
-        }
+        }  
 
         async function checkPrepaidDiscount() {
             if (localStorage.getItem('moreTrendzPrepaidDiscount') === 'true') {
@@ -197,8 +197,29 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
             }
         });
 
+        // --- NEW REDIRECT MODAL FUNCTION ---
+        function showRedirectModal(orderId) {
+            const modalMessage = document.getElementById('generic-modal-message');
+            let countdown = 5;
+            
+            // Show the modal with the initial message
+            window.showModal('Order Placed Successfully!', `Redirecting in ${countdown} seconds...`);
+            
+            const interval = setInterval(() => {
+                countdown--;
+                if(modalMessage) modalMessage.textContent = `Redirecting in ${countdown} seconds...`;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    window.location.href = `./order-confirmation.html?status=success&orderId=${orderId}`;
+                }
+            }, 1000);
+        }
+
         checkoutForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const submitButton = checkoutForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
             // This is a helper function to avoid repeating the pixel code
             const trackPurchase = (order) => {
                 const contentIds = order.orderItems.map(item => item._id);
@@ -242,7 +263,7 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
                     // --- ⬇️ ADD THIS PIXEL CODE for COD ⬇️ ---
                     trackPurchase(orderData.dbOrder);
                     // --- ⬆️ END OF PIXEL CODE ⬆️ ---
-                    window.location.href = `./order-confirmation.html?status=success&orderId=${orderData.dbOrder._id}`;
+                    showRedirectModal(orderData.dbOrder._id);
                 } else if (paymentMethod === 'Online') {
                     const { dbOrder, razorpayOrder } = orderData;
                     const options = {
@@ -260,7 +281,7 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
                                 // --- ⬇️ ADD THIS PIXEL CODE for Online ⬇️ ---
                                 trackPurchase(dbOrder);
                                 // --- ⬆️ END OF PIXEL CODE ⬆️ ---
-                                window.location.href = `./order-confirmation.html?status=success&orderId=${dbOrder._id}`;
+                                showRedirectModal(orderData.dbOrder._id);
                             } else {
                                 window.location.href = `./order-confirmation.html?status=failed&orderId=${dbOrder._id}`;
                             }

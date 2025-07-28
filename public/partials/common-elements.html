@@ -13,3 +13,11 @@
         </form>
     </div>
 </div>
+
+<div id="generic-modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+    <div id="generic-modal-content" class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm text-center transform scale-95 transition-transform duration-300">
+        <h2 id="generic-modal-title" class="text-xl font-bold text-gray-800 mb-2"></h2>
+        <p id="generic-modal-message" class="text-gray-600 mb-4"></p>
+        <button onclick="closeModal()" class="bg-black text-white font-semibold py-2 px-6 rounded-md hover:bg-gray-800">OK</button>
+    </div>
+</div>
