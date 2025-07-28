@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- Start cookieyes banner --> <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/3987a96a6f82f080d050b24b/script.js"></script> <!-- End cookieyes banner -->
+    <!-- Start cookieyes banner -->
+    <script id="cookieyes" type="text/javascript"
+        src="https://cdn-cookieyes.com/client_data/3987a96a6f82f080d050b24b/script.js"></script>
+    <!-- End cookieyes banner -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart - MoreTrendz</title>
@@ -9,34 +13,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Montserrat', sans-serif; }
-        #ai-modal-backdrop { transition: opacity 0.3s ease; }
-        #ai-modal-content { transition: transform 0.3s ease; }
-    </style>
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1774275046853349');
-fbq('track', 'PageView');
-</script>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
 
-<!-- End Meta Pixel Code -->
+        #ai-modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
+
+        #ai-modal-content {
+            transition: transform 0.3s ease;
+        }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-087FLETKDS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-087FLETKDS');
+    </script>
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1774275046853349');
+        fbq('track', 'PageView');
+    </script>
+
+    <!-- End Meta Pixel Code -->
 </head>
+
 <body class="bg-gray-100">
     <div id="common-elements-placeholder"></div>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
-/></noscript>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1" /></noscript>
     <div class="flex flex-col min-h-screen">
         <header id="header-placeholder"></header>
-    
+
         <main class="container mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Your Shopping Cart</h1>
             <div id="cart-container" class="bg-white p-6 rounded-lg shadow-md">
@@ -45,9 +69,13 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
             </div>
         </main>
 
-        <div id="ai-modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0">
+        <div id="ai-modal-backdrop"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0">
             <div id="ai-modal-content" class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform scale-95">
-                <div class="flex items-center justify-between mb-4"><h2 class="text-xl font-bold text-gray-800">✨ AI Styling Assistant</h2><button onclick="closeAiModal()" class="text-gray-500 hover:text-gray-800">&times;</button></div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">✨ AI Styling Assistant</h2><button
+                        onclick="closeAiModal()" class="text-gray-500 hover:text-gray-800">&times;</button>
+                </div>
                 <div id="ai-suggestion-text" class="text-gray-600"></div>
             </div>
         </div>
@@ -73,8 +101,8 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
         }
 
         function getCart() { return JSON.parse(localStorage.getItem('moreTrendzCart')) || []; }
-        function saveCart(cart) { 
-            localStorage.setItem('moreTrendzCart', JSON.stringify(cart)); 
+        function saveCart(cart) {
+            localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
             displayCartItems();
             if (window.updateCartIcon) {
                 window.updateCartIcon();
@@ -109,29 +137,30 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
         function removeFromCart(productId) { let cart = getCart().filter(item => item._id !== productId); saveCart(cart); }
         function openAiModal() { const modalBackdrop = document.getElementById('ai-modal-backdrop'); const modalContent = document.getElementById('ai-modal-content'); modalBackdrop.classList.remove('hidden'); setTimeout(() => { modalBackdrop.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); }, 10); }
         function closeAiModal() { const modalBackdrop = document.getElementById('ai-modal-backdrop'); const modalContent = document.getElementById('ai-modal-content'); modalBackdrop.classList.add('opacity-0'); modalContent.classList.add('scale-95'); setTimeout(() => { modalBackdrop.classList.add('hidden'); }, 300); }
-        async function getAiSuggestion() { 
-            const cart = getCart(); 
-            if (cart.length === 0) { 
+        async function getAiSuggestion() {
+            const cart = getCart();
+            if (cart.length === 0) {
                 if (window.showToast) {
                     window.showToast("Add items to your cart first!", 'error');
                 }
-                return; 
-            } 
-            const suggestionTextElement = document.getElementById('ai-suggestion-text'); 
-            suggestionTextElement.innerHTML = '<p>✨ Thinking of the perfect look for you...</p>'; 
-            openAiModal(); 
-            const productNames = cart.map(item => item.name); 
-            try { 
-                const response = await fetch('https://moretrendz-backend.onrender.com/api/ai/suggest-outfit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ productNames }) }); 
-                if (!response.ok) { throw new Error('Could not get a suggestion from the AI stylist.'); } 
-                const data = await response.json(); 
-                suggestionTextElement.textContent = data.suggestion; 
-            } catch (error) { 
-                console.error("Error getting AI suggestion:", error); 
-                suggestionTextElement.textContent = "Sorry, our AI stylist is busy right now. Please try again in a moment."; 
-            } 
+                return;
+            }
+            const suggestionTextElement = document.getElementById('ai-suggestion-text');
+            suggestionTextElement.innerHTML = '<p>✨ Thinking of the perfect look for you...</p>';
+            openAiModal();
+            const productNames = cart.map(item => item.name);
+            try {
+                const response = await fetch('https://moretrendz-backend.onrender.com/api/ai/suggest-outfit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ productNames }) });
+                if (!response.ok) { throw new Error('Could not get a suggestion from the AI stylist.'); }
+                const data = await response.json();
+                suggestionTextElement.textContent = data.suggestion;
+            } catch (error) {
+                console.error("Error getting AI suggestion:", error);
+                suggestionTextElement.textContent = "Sorry, our AI stylist is busy right now. Please try again in a moment.";
+            }
         }
     </script>
     <script type="module" src="/js/main.js" defer></script>
 </body>
+
 </html>

@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- Start cookieyes banner --> <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/3987a96a6f82f080d050b24b/script.js"></script> <!-- End cookieyes banner -->
+    <!-- Start cookieyes banner -->
+    <script id="cookieyes" type="text/javascript"
+        src="https://cdn-cookieyes.com/client_data/3987a96a6f82f080d050b24b/script.js"></script>
+    <!-- End cookieyes banner -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results - MoreTrendz</title>
@@ -14,45 +18,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Montserrat', sans-serif; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
     </style>
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1774275046853349');
-fbq('track', 'PageView');
-</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-087FLETKDS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-<!-- End Meta Pixel Code -->
+        gtag('config', 'G-087FLETKDS');
+    </script>
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1774275046853349');
+        fbq('track', 'PageView');
+    </script>
+
+    <!-- End Meta Pixel Code -->
 </head>
+
 <body class="bg-white">
     <div id="common-elements-placeholder"></div>
 
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
-/></noscript>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1" /></noscript>
     <div class="flex flex-col min-h-screen">
-            <header id="header-placeholder"></header>
+        <header id="header-placeholder"></header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
-        <h1 class="text-3xl font-bold text-gray-800">Search Results for "<span id="search-query"></span>"</h1>
-        <p id="results-count" class="mt-2 text-gray-600"></p>
-        
-        <div id="results-grid" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
-            <!-- Search results will be inserted here -->
-        </div>
-    </main>
-    <div id="faq-placeholder"></div>
-    <div id="footer-placeholder"></div>
+        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+            <h1 class="text-3xl font-bold text-gray-800">Search Results for "<span id="search-query"></span>"</h1>
+            <p id="results-count" class="mt-2 text-gray-600"></p>
+
+            <div id="results-grid" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+                <!-- Search results will be inserted here -->
+            </div>
+        </main>
+        <div id="faq-placeholder"></div>
+        <div id="footer-placeholder"></div>
     </div>
-        
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             performSearch();
@@ -112,6 +130,7 @@ src="https://www.facebook.com/tr?id=1774275046853349&ev=PageView&noscript=1"
         function getCart() { return JSON.parse(localStorage.getItem('moreTrendzCart')) || []; }
         function updateCartIcon() { const cart = getCart(); const cartCountElement = document.getElementById('cart-count'); const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); cartCountElement.textContent = totalItems; }
     </script>
-        <script type="module" src="/js/main.js" defer></script>
+    <script type="module" src="/js/main.js" defer></script>
 </body>
+
 </html>
