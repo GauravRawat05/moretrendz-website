@@ -73,6 +73,19 @@
         .rating label:hover~label {
             color: #f59e0b;
         }
+
+        #toast-notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        #toast-notification.show {
+            top: 20px;
+        }        
     </style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-087FLETKDS"></script>
