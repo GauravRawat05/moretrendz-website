@@ -159,9 +159,10 @@ function addToCartFromRelated(productId) {
     }
     localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
     
-    if (window.showModal) {
-        window.showModal('Added to Cart!', `1 x ${productToAdd.name} has been added.`);
+    if (window.showToast) {
+        window.showToast(`1 x ${productToAdd.name} added to cart!`, 'success');
     }
+    // Also call updateCartIcon to fix the real-time update
     if (window.updateCartIcon) {
         window.updateCartIcon();
     }

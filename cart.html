@@ -101,6 +101,7 @@
         }
 
         function getCart() { return JSON.parse(localStorage.getItem('moreTrendzCart')) || []; }
+        
         function saveCart(cart) {
             localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
             displayCartItems();

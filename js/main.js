@@ -1,20 +1,6 @@
 import { createApp } from 'vue'; // <-- NEW: Import createApp from Vue
 import Header from './components/Header.vue'; // <-- NEW: Import your Header component
 
-window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
-
-window.updateCartIcon = () => {
-    const cart = window.getCart();
-    // Use a small delay to ensure the header element is on the page
-    setTimeout(() => {
-        const cartCountElement = document.getElementById('cart-count');
-        if (cartCountElement) {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCountElement.textContent = totalItems;
-        }
-    }, 100); // 100ms delay
-};
-
 document.addEventListener("DOMContentLoaded", function () {
     // --- CREATE AND MOUNT THE VUE HEADER ---
     createApp(Header).mount('#header-placeholder');
@@ -32,26 +18,26 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error(`Error loading component from ${url}:`, error));
     };
 
+    const setupFAQ = () => {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                question.classList.toggle('active');
+            });
+        });
+    };
+
     Promise.all([
         // REMOVED: loadComponent for header, Vue is handling it now
         loadComponent('#footer-placeholder', '/partials/footer.html'),
         loadComponent('#common-elements-placeholder', '/partials/common-elements.html'),
         loadComponent('#faq-placeholder', '/partials/faq.html')
     ]).then(() => {
+        // This code runs AFTER the footer, FAQ, and common elements are loaded
+
         // REMOVED: setupHeader(), it's now inside Header.vue
         // REMOVED: getCart() and updateCartIcon(), they are now inside Header.vue
-
-        const setupFAQ = () => {
-            const faqQuestions = document.querySelectorAll('.faq-question');
-            const faqAnswers = document.querySelectorAll('.faq-answer');
-
-            faqQuestions.forEach((question, index) => {
-                question.addEventListener('click', () => {
-                    question.classList.toggle('active');
-                });
-            });
-        };
-        setupFAQ();
+        window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
 
         // Modal and Toast logic remains
         const modalBackdrop = document.getElementById('generic-modal-backdrop');
@@ -76,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(() => modalBackdrop.classList.add('hidden'), 300);
         };
 
-        const toastElement = document.getElementById('toast-notification');
+                const toastElement = document.getElementById('toast-notification');
         const toastMessageElement = document.getElementById('toast-message');
         const toastIconElement = document.getElementById('toast-icon');
         let toastTimeout;
@@ -106,19 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 4000);
         };
 
-        // The message listener for pop-ups
-        window.addEventListener('message', function (event) {
-            // A basic security check
-            if (event.origin.includes('moretrendz.online') || event.origin.includes('localhost') || event.origin.includes('127.0.0.1')) {
-                if (event.data.type === 'cartUpdated') {
-                    window.showToast(event.data.message, 'success');
-                    //window.showModal('Added to Cart!', event.data.message);
-                    window.updateCartIcon(); // Update the cart icon count
-                }
-            }
-        });
-
-        window.updateCartIcon();
+        setupFAQ();
 
         if (typeof initializePageScripts === 'function') {
             initializePageScripts();
