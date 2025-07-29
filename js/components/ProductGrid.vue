@@ -11,8 +11,8 @@
           <a :href="`./product.html?id=${product._id}`" class="block">
             <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200">
               <img :src="product.media[0].url" :alt="product.name" class="h-full w-full object-cover object-center" loading="lazy">
-              <div v-if="product.salePrice" class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">
-              {{ calculateDiscountPercentage(product.price, product.salePrice) }}% OFF
+              <div v-if="product.salePrice && product.salePrice < product.price" class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">
+                {{ calculateDiscountPercentage(product.price, product.salePrice) }}% OFF
               </div>
             </div>
           </a>

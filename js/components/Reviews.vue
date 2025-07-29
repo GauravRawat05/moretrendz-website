@@ -77,7 +77,8 @@ onMounted(fetchReviews);
 const toggleReviewForm = () => { isFormVisible.value = !isFormVisible.value; };
 
 const submitReview = async () => {
-  if (!newReview.rating) { alert('Please select a star rating.'); return; }
+  if (!newReview.rating) { if (window.showModal) window.showModal('Input Error', 'Please select a star rating.');
+    else alert('Please select a star rating.'); return; }
   try {
     const response = await fetch('https://moretrendz-backend.onrender.com/api/reviews', {
       method: 'POST',
@@ -88,10 +89,12 @@ const submitReview = async () => {
     newReview.author = ''; newReview.rating = null; newReview.text = '';
     isFormVisible.value = false;
     await fetchReviews();
-    alert('Thank you! Your review has been submitted.');
-  } catch (err) {
-    alert(err.message);
-  }
+    if (window.showModal) window.showModal('Success!', 'Thank you! Your review has been submitted.');
+    else alert('Thank you! Your review has been submitted.');
+    } catch (err) {
+      if (window.showModal) window.showModal('Error', err.message);
+      else alert(err.message);
+    }
 };
 
 const renderStars = (rating) => {

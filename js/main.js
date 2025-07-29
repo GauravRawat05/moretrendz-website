@@ -1,6 +1,8 @@
 import { createApp } from 'vue'; // <-- NEW: Import createApp from Vue
 import Header from './components/Header.vue'; // <-- NEW: Import your Header component
 
+window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
+
 document.addEventListener("DOMContentLoaded", function () {
     // --- CREATE AND MOUNT THE VUE HEADER ---
     createApp(Header).mount('#header-placeholder');
