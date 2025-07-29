@@ -33,12 +33,12 @@ router.get('/search', async (req, res) => {
 // --- CREATE A PRODUCT (POST /api/products) ---
 router.post('/', async (req, res) => {
   try {
-    const { name, description, price, media, isFeatured } = req.body;
+    const { name, description, price, salePrice, media, isFeatured } = req.body;
     if (isFeatured) {
         await Product.updateMany({}, { isFeatured: false });
     }
     const newProduct = new Product({ 
-        name, description, price, media, isFeatured
+        name, description, price, salePrice, media, isFeatured
     });
     const savedProduct = await newProduct.save();
     res.status(201).json(savedProduct);
@@ -49,6 +49,24 @@ router.post('/', async (req, res) => {
     }
     res.status(500).json({ message: 'Server error while creating product' });
   }
+});
+
+// This is essential for adding/removing sales from existing products
+router.patch('/:id', async (req, res) => {
+    try {
+        const product = await Product.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            { new: true, runValidators: true } // new:true returns the updated doc, runValidators ensures our salePrice < price rule runs
+        );
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.json(product);
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).json({ message: 'Server error while updating product' });
+    }
 });
 
 // --- GET ALL PRODUCTS (GET /api/products) ---

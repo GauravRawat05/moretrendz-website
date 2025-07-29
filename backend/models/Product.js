@@ -30,6 +30,19 @@ const productSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
+  // --- ADD THIS NEW FIELD ---
+  salePrice: {
+    type: Number,
+    min: 0,
+    // Optional: ensures sale price is always lower than regular price
+    validate: {
+      validator: function(value) {
+        // 'this' refers to the document being saved
+        return value < this.price;
+      },
+      message: 'Sale price must be less than the regular price.'
+    }
+  },
   media: {
     type: [mediaSchema],
     required: true,

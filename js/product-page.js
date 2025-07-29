@@ -8,6 +8,12 @@ createApp(Reviews).mount('#reviews-section-placeholder');
 // --- EXISTING NON-VUE LOGIC FOR THIS PAGE ---
 let currentProduct = null;
 
+const calculateDiscountPercentage = (originalPrice, salePrice) => {
+    if (!salePrice || salePrice >= originalPrice) return 0;
+    const discount = ((originalPrice - salePrice) / originalPrice) * 100;
+    return Math.round(discount);
+};
+
 async function fetchProductDetails() {
     const container = document.getElementById('product-container');
     const loadingMessage = document.getElementById('loading-message');
@@ -36,7 +42,38 @@ function displayProduct(product) {
     const container = document.getElementById('product-container');
     let thumbnailsHTML = '';
     product.media.forEach((item, index) => { thumbnailsHTML += `<div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMedia(${index})">${item.type === 'image' ? `<img src="${item.url}" alt="Thumbnail ${index + 1}" class="w-full h-20 object-cover rounded-md">` : `<div class="w-full h-20 bg-black flex items-center justify-center rounded-md"><i data-lucide="video" class="w-6 h-6 text-white"></i></div>`}</div>`; });
-    const productHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"><div class="flex flex-col-reverse md:flex-row gap-4"><div class="flex md:flex-col gap-2 overflow-x-auto md:overflow-x-hidden">${thumbnailsHTML}</div><div id="main-media-display" class="flex-1 aspect-w-1 aspect-h-1"></div></div><div class="flex flex-col justify-center"><h1 class="text-3xl lg:text-4xl font-bold text-gray-800">${product.name}</h1><div class="mt-4 flex items-center"><div id="product-stars-container" class="flex items-center"></div><a href="#reviews-section" id="review-count-link" class="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"></a></div><p class="text-3xl text-gray-900 mt-4">₹${product.price.toFixed(2)}</p><div class="mt-6 border-t pt-6"><div class="flex items-center space-x-4 mb-4"><label class="font-medium">Quantity:</label><div class="flex items-center border rounded-md"><button onclick="updateQuantity(-1)" class="px-3 py-1 text-lg">-</button><span id="quantity-display" class="px-4 py-1">1</span><button onclick="updateQuantity(1)" class="px-3 py-1 text-lg">+</button></div></div><button onclick="addToCart()" class="w-full bg-gray-800 text-white font-bold py-3 px-8 rounded-md hover:bg-black transition-colors mb-3">Add to Cart</button><div class="grid grid-cols-2 gap-3"><button onclick="buyNow('COD')" class="w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-md hover:bg-blue-700 transition-colors">Buy with COD</button><button onclick="buyNow('Online')" class="w-full bg-green-600 text-white font-bold py-3 px-8 rounded-md hover:bg-green-700 transition-colors">Prepaid (15% OFF)</button></div></div><div class="mt-8 border-t pt-6"><h2 class="text-lg font-semibold text-gray-800 mb-2">Description</h2><div class="prose-styles text-gray-600">${product.description}</div></div></div></div>`;
+    let priceHTML = '';
+    if (product.salePrice) {
+        priceHTML = `
+            <div class="flex items-baseline gap-2">
+                <p class="text-3xl text-red-600 font-bold">₹${product.salePrice.toFixed(2)}</p>
+                <p class="text-xl text-gray-500 line-through">₹${product.price.toFixed(2)}</p>
+            </div>`;
+    } else {
+        priceHTML = `<p class="text-3xl text-gray-900">₹${product.price.toFixed(2)}</p>`;
+    }
+
+    let saleTagHTML = '';
+    if (product.salePrice) {
+        saleTagHTML = `
+            <div class="absolute top-4 left-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-md z-10">
+                ${calculateDiscountPercentage(product.price, product.salePrice)}% OFF
+            </div>`;
+    }
+    // --- END OF NEW HTML ---
+
+    const productHTML = `
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div class="relative flex flex-col-reverse md:flex-row gap-4">
+          ${saleTagHTML} <div class="flex md:flex-col gap-2 ...">${thumbnailsHTML}</div>
+          <div id="main-media-display" ...></div>
+        </div>
+        <div class="flex flex-col justify-center">
+          <h1 class="text-3xl lg:text-4xl ...">${product.name}</h1>
+          <div class="mt-4 flex items-center"> ... </div>
+          <div class="mt-4">${priceHTML}</div> <div class="mt-6 border-t pt-6"> ... </div>
+        </div>
+      </div>`;
     container.innerHTML = productHTML;
     changeMedia(0);
     lucide.createIcons();

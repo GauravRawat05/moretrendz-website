@@ -11,10 +11,16 @@
           <a :href="`./product.html?id=${product._id}`" class="block">
             <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200">
               <img :src="product.media[0].url" :alt="product.name" class="h-full w-full object-cover object-center" loading="lazy">
+              <div v-if="product.salePrice" class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">
+              {{ calculateDiscountPercentage(product.price, product.salePrice) }}% OFF
+              </div>
             </div>
           </a>
           <div class="mt-4 flex-grow">
             <h3 class="text-sm text-gray-700"><a :href="`./product.html?id=${product._id}`">{{ product.name }}</a></h3>
+            <div v-if="product.salePrice" class="mt-1">
+            <span class="text-lg font-medium text-black">₹{{ product.salePrice.toFixed(2) }}</span>
+            <span class="ml-2 text-sm text-gray-500 line-through">₹{{ product.price.toFixed(2) }}</span></div>
             <p class="mt-1 text-lg font-medium text-black">₹{{ product.price.toFixed(2) }}</p>
           </div>
           <div class="mt-4 flex flex-col space-y-2">
@@ -35,6 +41,12 @@ import { ref, onMounted } from 'vue';
 const products = ref([]);
 const isLoading = ref(true);
 const error = ref(null);
+
+const calculateDiscountPercentage = (originalPrice, salePrice) => {
+    if (!salePrice || salePrice >= originalPrice) return 0;
+    const discount = ((originalPrice - salePrice) / originalPrice) * 100;
+    return Math.round(discount);
+};
 
 // Fetch products when the component is first created
 onMounted(async () => {
