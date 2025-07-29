@@ -3,6 +3,18 @@ import Header from './components/Header.vue'; // <-- NEW: Import your Header com
 
 window.getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
 
+window.updateCartIcon = () => {
+    const cart = window.getCart();
+    // Use a small delay to ensure the header element is on the page
+    setTimeout(() => {
+        const cartCountElement = document.getElementById('cart-count');
+        if (cartCountElement) {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCountElement.textContent = totalItems;
+        }
+    }, 100); // 100ms delay
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     // --- CREATE AND MOUNT THE VUE HEADER ---
     createApp(Header).mount('#header-placeholder');
