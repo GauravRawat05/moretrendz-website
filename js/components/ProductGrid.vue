@@ -88,8 +88,8 @@ const addToCart = (productToAdd) => {
     }
     saveCart(cart);
     
-    if (window.showModal) {
-        window.showModal('Added to Cart!', `1 x ${productToAdd.name} added to cart!`);
+    if (window.showToast) {
+        window.showToast(`1 x ${productToAdd.name} added to cart!`, 'success');
     }
 };
 

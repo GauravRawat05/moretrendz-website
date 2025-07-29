@@ -72,7 +72,12 @@ function addToCart() {
         cart.push({ _id: currentProduct._id, name: currentProduct.name, price: currentProduct.price, imageURL: currentProduct.media[0].url, quantity: quantity });
     }
     localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
-    window.parent.postMessage({ type: 'cartUpdated', message: `${quantity} x ${currentProduct.name} added to cart!` }, '*');
+    if (window.showToast) {
+        window.showToast(`${quantity} x ${currentProduct.name} added to cart!`, 'success');
+    }
+    if (window.updateCartIcon) {
+        window.updateCartIcon();
+    }
 }
 
 function buyNow(method) {
