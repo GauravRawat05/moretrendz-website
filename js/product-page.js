@@ -162,10 +162,8 @@ function addToCartFromRelated(productId) {
     if (window.showToast) {
         window.showToast(`1 x ${productToAdd.name} added to cart!`, 'success');
     }
-    // Also call updateCartIcon to fix the real-time update
-    if (window.updateCartIcon) {
-        window.updateCartIcon();
-    }
+    
+    window.dispatchEvent(new CustomEvent('cart-updated'));
 }
 
 function buyNowPrepaidFromRelated(productId) {

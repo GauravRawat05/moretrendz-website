@@ -105,9 +105,7 @@
         function saveCart(cart) {
             localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
             displayCartItems();
-            if (window.updateCartIcon) {
-                window.updateCartIcon();
-            }
+             window.dispatchEvent(new CustomEvent('cart-updated'));
         }
 
         function displayCartItems() {

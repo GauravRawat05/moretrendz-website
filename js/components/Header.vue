@@ -37,11 +37,8 @@ const cartItemCount = ref(0);
 const isMobileMenuOpen = ref(false);
 const isSearchOpen = ref(false); // Note: Search logic is simplified here
 
-// --- Helper Functions ---
-const getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
-
 const updateCartIcon = () => {
-    const cart = getCart();
+    const cart = JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
     cartItemCount.value = cart.reduce((sum, item) => sum + item.quantity, 0);
 };
 
