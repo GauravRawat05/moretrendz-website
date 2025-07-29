@@ -7,6 +7,7 @@ createApp(Reviews).mount('#reviews-section-placeholder');
 
 // --- EXISTING NON-VUE LOGIC FOR THIS PAGE ---
 let currentProduct = null;
+let relatedProductsList = [];
 
 const calculateDiscountPercentage = (originalPrice, salePrice) => {
     if (!salePrice || salePrice >= originalPrice) return 0;
@@ -107,9 +108,74 @@ function displayRelatedProducts(products) {
     const section = document.getElementById('related-products-section');
     const grid = document.getElementById('related-products-grid');
     if (!products || products.length === 0) return;
+    relatedProductsList = products; // Store products for the buttons to use
     grid.innerHTML = '';
-    products.forEach(product => { const imageUrl = (product.media && product.media.length > 0) ? product.media[0].url : 'https://placehold.co/600x750/E2E8F0/111827?text=Image'; const cardHTML = `<a href="./product.html?id=${product._id}" class="group"><div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200"><img src="${imageUrl}" alt="${product.name}" class="h-full w-full object-cover object-center group-hover:opacity-75"></div><h3 class="mt-4 text-sm text-gray-700">${product.name}</h3><p class="mt-1 text-lg font-medium text-gray-900">₹${product.price.toFixed(2)}</p></a>`; grid.innerHTML += cardHTML; });
+    products.forEach(product => {
+        const imageUrl = (product.media && product.media.length > 0) ? product.media[0].url : 'https://placehold.co/600x750/E2E8F0/111827?text=Image';
+        // --- NEW: Price and Sale Tag HTML Logic ---
+        let saleTagHTML = '';
+        if (product.salePrice && product.salePrice < product.price) {
+            saleTagHTML = `<div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">${calculateDiscountPercentage(product.price, product.salePrice)}% OFF</div>`;
+        }
+        let priceHTML = '';
+        if (product.salePrice && product.salePrice < product.price) {
+            priceHTML = `<div class="mt-1"><span class="text-lg font-medium text-black">₹${product.salePrice.toFixed(2)}</span><span class="ml-2 text-sm text-gray-500 line-through">₹${product.price.toFixed(2)}</span></div>`;
+        } else {
+            priceHTML = `<p class="mt-1 text-lg font-medium text-black">₹${product.price.toFixed(2)}</p>`;
+        }
+        // --- NEW: Full Card HTML with Buttons ---
+        const cardHTML = `
+            <div class="group relative product-card flex flex-col">
+                <a href="./product.html?id=${product._id}" class="block">
+                    <div class="relative aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200">
+                        <img src="${imageUrl}" alt="${product.name}" class="h-full w-full object-cover object-center" loading="lazy">
+                        ${saleTagHTML}
+                    </div>
+                </a>
+                <div class="mt-4 flex-grow">
+                    <h3 class="text-sm text-gray-700"><a href="./product.html?id=${product._id}">${product.name}</a></h3>
+                    ${priceHTML}
+                </div>
+                <div class="mt-4 flex flex-col space-y-2">
+                    <button onclick="addToCartFromRelated('${product._id}')" class="w-full bg-gray-800 text-white text-sm font-semibold py-2 px-4 rounded-md hover:bg-black transition-all duration-300">Add to Cart</button>
+                    <button onclick="buyNowPrepaidFromRelated('${product._id}')" class="w-full bg-green-600 text-white text-sm font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition-all duration-300">Prepaid (15% OFF)</button>
+                </div>
+            </div>`;
+        grid.innerHTML += cardHTML;
+    });
     section.classList.remove('hidden');
+}
+
+function addToCartFromRelated(productId) {
+    const productToAdd = relatedProductsList.find(p => p._id === productId);
+    if (!productToAdd) return;
+    
+    let cart = window.getCart ? window.getCart() : [];
+    const existingProductIndex = cart.findIndex(item => item._id === productToAdd._id);
+    if (existingProductIndex !== -1) {
+        cart[existingProductIndex].quantity += 1;
+    } else {
+        cart.push({ _id: productToAdd._id, name: productToAdd.name, price: productToAdd.price, imageURL: productToAdd.media[0].url, quantity: 1 });
+    }
+    localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
+    
+    if (window.showModal) {
+        window.showModal('Added to Cart!', `1 x ${productToAdd.name} has been added.`);
+    }
+    if (window.updateCartIcon) {
+        window.updateCartIcon();
+    }
+}
+
+function buyNowPrepaidFromRelated(productId) {
+    const productToAdd = relatedProductsList.find(p => p._id === productId);
+    if (!productToAdd) return;
+    
+    localStorage.removeItem('moreTrendzDiscount');
+    const cart = [{ _id: productToAdd._id, name: productToAdd.name, price: productToAdd.price, imageURL: productToAdd.media[0].url, quantity: 1 }];
+    localStorage.setItem('moreTrendzPrepaidDiscount', 'true');
+    localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
+    window.location.href = './checkout.html';
 }
 
 function changeMedia(index) {
@@ -154,6 +220,8 @@ window.changeMedia = changeMedia;
 window.updateQuantity = updateQuantity;
 window.addToCart = addToCart;
 window.buyNow = buyNow;
+window.addToCartFromRelated = addToCartFromRelated;
+window.buyNowPrepaidFromRelated = buyNowPrepaidFromRelated;
 
 // Run the main function for the page when the script loads
 fetchProductDetails();
