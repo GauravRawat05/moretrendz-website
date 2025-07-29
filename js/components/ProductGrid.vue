@@ -55,9 +55,7 @@ const getCart = () => JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
 
 const saveCart = (cart) => {
     localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
-    if (window.updateCartIcon) {
-        window.updateCartIcon();
-    }
+    window.dispatchEvent(new CustomEvent('cart-updated'));
 };
 
 const addToCart = (productToAdd) => {

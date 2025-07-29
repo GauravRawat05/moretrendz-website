@@ -75,9 +75,7 @@ function addToCart() {
     if (window.showToast) {
         window.showToast(`${quantity} x ${currentProduct.name} added to cart!`, 'success');
     }
-    if (window.updateCartIcon) {
-        window.updateCartIcon();
-    }
+    window.dispatchEvent(new CustomEvent('cart-updated'));
 }
 
 function buyNow(method) {
