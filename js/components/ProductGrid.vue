@@ -18,10 +18,10 @@
           </a>
           <div class="mt-4 flex-grow">
             <h3 class="text-sm text-gray-700"><a :href="`./product.html?id=${product._id}`">{{ product.name }}</a></h3>
-            <div v-if="product.salePrice" class="mt-1">
+            <div v-if="product.salePrice && product.salePrice < product.price" class="mt-1">
             <span class="text-lg font-medium text-black">₹{{ product.salePrice.toFixed(2) }}</span>
-            <span class="ml-2 text-sm text-gray-500 line-through">₹{{ product.price.toFixed(2) }}</span></div>
-            <p class="mt-1 text-lg font-medium text-black">₹{{ product.price.toFixed(2) }}</p>
+            <span class="ml-2 text-sm text-gray-500 line-through">₹{{ product.price.toFixed(2) }}</span> </div>
+            <p v-else class="mt-1 text-lg font-medium text-black">₹{{ product.price.toFixed(2) }}</p>
           </div>
           <div class="mt-4 flex flex-col space-y-2">
             <button @click="addToCart(product)" class="w-full bg-gray-800 text-white text-sm font-semibold py-2 px-4 rounded-md hover:bg-black transition-all duration-300">Add to Cart</button>
