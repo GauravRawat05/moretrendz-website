@@ -1,6 +1,16 @@
 import { createApp } from 'vue'; // <-- NEW: Import createApp from Vue
 import Header from './components/Header.vue'; // <-- NEW: Import your Header component
 
+window.onload = function() {
+  const skeleton = document.getElementById('skeleton-loader');
+  const mainContent = document.getElementById('main-content');
+  
+  if (skeleton && mainContent) {
+    skeleton.style.display = 'none';
+    mainContent.classList.remove('opacity-0');
+  }
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     // --- CREATE AND MOUNT THE VUE HEADER ---
     createApp(Header).mount('#header-placeholder');

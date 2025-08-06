@@ -64,7 +64,6 @@ app.use('/api', adminAuthRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/contact', contactRoutes);
 
-
 // --- Server + DB Startup ---
 const PORT = process.env.PORT || 5000;
 
@@ -82,5 +81,10 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+
+// Add this simple route to server.js
+app.get('/api/health', (req, res) => {
+  res.status(200).send('Server is healthy and awake!');
+});
 
 startServer();
