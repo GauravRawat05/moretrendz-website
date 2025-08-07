@@ -126,7 +126,26 @@
         <header id="header-placeholder"></header>
 
         <main id="page-container" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
-            <div id="product-container">
+            <div id="product-skeleton-loader">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 animate-pulse">
+                    <div class="flex flex-col-reverse md:flex-row gap-4">
+                        <div class="flex md:flex-col gap-2">
+                            <div class="w-20 h-20 bg-gray-300 rounded-md"></div>
+                            <div class="w-20 h-20 bg-gray-300 rounded-md"></div>
+                            <div class="w-20 h-20 bg-gray-300 rounded-md"></div>
+                        </div>
+                        <div class="flex-1 aspect-w-1 aspect-h-1 bg-gray-300 rounded-lg"></div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="h-8 w-3/4 bg-gray-300 rounded"></div>
+                        <div class="h-6 w-1/4 bg-gray-300 rounded"></div>
+                        <div class="h-10 w-1/2 bg-gray-300 rounded"></div>
+                        <div class="h-12 w-full bg-gray-300 rounded-md"></div>
+                        <div class="h-12 w-full bg-gray-300 rounded-md"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="product-container" class="opacity-0 transition-opacity duration-500">
                 <p id="loading-message" class="text-center text-gray-500">Loading product...</p>
             </div>
 

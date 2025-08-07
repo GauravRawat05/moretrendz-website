@@ -17,11 +17,13 @@ const calculateDiscountPercentage = (originalPrice, salePrice) => {
 
 async function fetchProductDetails() {
     const container = document.getElementById('product-container');
+    const skeleton = document.getElementById('product-skeleton-loader');
     const loadingMessage = document.getElementById('loading-message');
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
 
     if (!productId) {
+        if(skeleton) skeleton.style.display = 'none';
         container.innerHTML = '<p class="text-center text-red-500">No product ID provided.</p>';
         return;
     }
@@ -35,7 +37,9 @@ async function fetchProductDetails() {
         displayRelatedProducts(data.relatedProducts);
     } catch (error) {
         console.error('Error fetching product details:', error);
+        if(skeleton) skeleton.style.display = 'none';
         container.innerHTML = `<p class="text-center text-red-500">Error: ${error.message}. Please try again.</p>`;
+        container.classList.remove('opacity-0');
     }
 }
 
@@ -181,7 +185,7 @@ function changeMedia(index) {
     const mainDisplay = document.getElementById('main-media-display');
     if (!currentProduct || !currentProduct.media || !currentProduct.media[index]) return;
     const mediaItem = currentProduct.media[index];
-    if (mediaItem.type === 'image') { mainDisplay.innerHTML = `<img src="${mediaItem.url}" alt="${currentProduct.name}" class="w-full h-full object-cover rounded-lg shadow-md">`; } else { const videoId = mediaItem.url.split('v=')[1]?.split('&')[0] || mediaItem.url.split('/').pop(); mainDisplay.innerHTML = `<div class="aspect-w-16 aspect-h-9"><iframe src="https://www.youtube-nocookie.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-md"></iframe></div>`; }
+    if (mediaItem.type === 'image') { mainDisplay.innerHTML = `<img src="${mediaItem.url}" alt="${currentProduct.name}" class="w-full h-full object-contain rounded-lg shadow-md">`; } else { const videoId = mediaItem.url.split('v=')[1]?.split('&')[0] || mediaItem.url.split('/').pop(); mainDisplay.innerHTML = `<div class="aspect-w-16 aspect-h-9"><iframe src="https://www.youtube-nocookie.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-md"></iframe></div>`; }
     document.querySelectorAll('.thumbnail').forEach((el, i) => { el.classList.toggle('active', i === index); });
 }
 
