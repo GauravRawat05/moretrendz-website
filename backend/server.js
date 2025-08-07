@@ -45,7 +45,6 @@ const limiter = rateLimit({
   max: 200,
   message: 'Too many requests from this IP, please try again later.',
 });
-app.use('/api', limiter);
 
 // --- Routes ---
 const productRoutes = require('./routes/productRoutes');
@@ -55,6 +54,22 @@ const discountRoutes = require('./routes/discountRoutes');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+
+// --- NEW STRUCTURE ---
+// 1. Define the health check route WITHOUT the limiter.
+app.get('/api/health', (req, res) => {
+  console.log(`Ping received at ${new Date().toLocaleTimeString()}! Keeping the server awake.`);
+  res.status(200).send('Server is healthy and awake!');
+});
+// 2. Apply the limiter ONLY to the other API routes.
+app.use('/api/products', limiter, productRoutes);
+app.use('/api/ai', limiter, aiRoutes);
+app.use('/api/orders', limiter, orderRoutes);
+app.use('/api/discounts', limiter, discountRoutes);
+app.use('/api', limiter, adminAuthRoutes);
+app.use('/api/reviews', limiter, reviewRoutes);
+app.use('/api/contact', limiter, contactRoutes);
+// --- END OF NEW STRUCTURE ---
 
 app.use('/api/products', productRoutes);
 app.use('/api/ai', aiRoutes);
@@ -81,10 +96,5 @@ const startServer = async () => {
     process.exit(1);
   }
 };
-
-// Add this simple route to server.js
-app.get('/api/health', (req, res) => {
-  res.status(200).send('Server is healthy and awake!');
-});
 
 startServer();
