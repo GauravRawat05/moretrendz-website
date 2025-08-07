@@ -80,7 +80,7 @@ function displayProduct(product) {
     // --- END OF NEW HTML ---
 
     const productHTML = `
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start">
         <div class="flex flex-col-reverse md:flex-row gap-4">
           <div class="flex md:flex-col gap-2 overflow-x-auto md:overflow-x-hidden">${thumbnailsHTML}</div>
           <div id="main-media-display" class="flex-1 aspect-w-1 aspect-h-1"></div>
