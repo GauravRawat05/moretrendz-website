@@ -72,13 +72,20 @@ const saveCart = (cart) => {
 
 const addToCart = (productToAdd) => {
     if (!productToAdd) return;
+
+    // --- THIS IS THE FIX ---
+    // Use the salePrice if it's valid, otherwise use the regular price
+    const priceToAdd = productToAdd.salePrice && productToAdd.salePrice < productToAdd.price 
+        ? productToAdd.salePrice 
+        : productToAdd.price;
+    // --- END OF FIX ---
     
     if (typeof fbq === 'function') {
       fbq('track', 'AddToCart', {
           content_name: productToAdd.name,
           content_ids: [productToAdd._id],
           content_type: 'product',
-          value: productToAdd.price,
+          value: priceToAdd,
           currency: 'INR'
       });
     }
@@ -91,7 +98,7 @@ const addToCart = (productToAdd) => {
         cart.push({
             _id: productToAdd._id,
             name: productToAdd.name,
-            price: productToAdd.price,
+            price: priceToAdd,
             imageURL: productToAdd.media[0].url,
             quantity: 1
         });

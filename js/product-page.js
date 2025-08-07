@@ -28,13 +28,23 @@ async function fetchProductDetails() {
         return;
     }
     try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        if (!productId) { 
+            throw new Error('No product ID provided.');
+        }
+
         const response = await fetch(`https://moretrendz-backend.onrender.com/api/products/${productId}`);
         if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
+        if (!data.product) throw new Error('Product data not found in API response.');
         currentProduct = data.product;
         loadingMessage.style.display = 'none';
         displayProduct(data.product);
         displayRelatedProducts(data.relatedProducts);
+
+        if(skeleton) skeleton.style.display = 'none';
+        container.classList.remove('opacity-0');
     } catch (error) {
         console.error('Error fetching product details:', error);
         if(skeleton) skeleton.style.display = 'none';
@@ -153,13 +163,16 @@ function displayRelatedProducts(products) {
 function addToCartFromRelated(productId) {
     const productToAdd = relatedProductsList.find(p => p._id === productId);
     if (!productToAdd) return;
-    
+    const priceToAdd = productToAdd.salePrice && productToAdd.salePrice < productToAdd.price 
+        ? productToAdd.salePrice 
+        : productToAdd.price;
+
     let cart = window.getCart ? window.getCart() : [];
     const existingProductIndex = cart.findIndex(item => item._id === productToAdd._id);
     if (existingProductIndex !== -1) {
         cart[existingProductIndex].quantity += 1;
     } else {
-        cart.push({ _id: productToAdd._id, name: productToAdd.name, price: productToAdd.price, imageURL: productToAdd.media[0].url, quantity: 1 });
+        cart.push({ _id: productToAdd._id, name: productToAdd.name, price: priceToAdd, imageURL: productToAdd.media[0].url, quantity: 1 });
     }
     localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
     
@@ -194,18 +207,22 @@ function updateQuantity(change) { const quantityEl = document.getElementById('qu
 function addToCart() {
     if (!currentProduct) return;
     const quantity = parseInt(document.getElementById('quantity-display').textContent);
+    const priceToAdd = currentProduct.salePrice &&      currentProduct.salePrice < currentProduct.price 
+        ? currentProduct.salePrice 
+        : currentProduct.price;
+
     let cart = JSON.parse(localStorage.getItem('moreTrendzCart')) || [];
     const existingProductIndex = cart.findIndex(item => item._id === currentProduct._id);
     if (existingProductIndex !== -1) {
         cart[existingProductIndex].quantity += quantity;
     } else {
-        cart.push({ _id: currentProduct._id, name: currentProduct.name, price: currentProduct.price, imageURL: currentProduct.media[0].url, quantity: quantity });
+        cart.push({ _id: currentProduct._id, name: currentProduct.name, price: priceToAdd, imageURL: currentProduct.media[0].url, quantity: quantity });
     }
     localStorage.setItem('moreTrendzCart', JSON.stringify(cart));
+    window.dispatchEvent(new CustomEvent('cart-updated'));
     if (window.showToast) {
         window.showToast(`${quantity} x ${currentProduct.name} added to cart!`, 'success');
     }
-    window.dispatchEvent(new CustomEvent('cart-updated'));
 }
 
 function buyNow(method) {
