@@ -4,11 +4,7 @@
 const renderFeaturedProduct = (product) => {
     if (!product || !product.media || product.media.length === 0) return;
 
-    // Update Background Image
-    const heroBgImage = document.getElementById('hero-bg-image');
-    if (heroBgImage) {
-        heroBgImage.src = product.media[0].url;
-    }
+    // Background Image logic removed to keep the static hero image
 
     // Update Content
     const heroContentContainer = document.getElementById('hero-content-container');
