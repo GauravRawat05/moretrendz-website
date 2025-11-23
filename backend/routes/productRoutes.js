@@ -13,11 +13,14 @@ router.get('/search', async (req, res) => {
             return res.status(400).json({ message: 'Search query is required.' });
         }
 
+        // Escape special characters to prevent ReDoS
+        const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
         // Perform a case-insensitive search on the product name and description
         const products = await Product.find({
             $or: [
-                { name: { $regex: query, $options: 'i' } },
-                { description: { $regex: query, $options: 'i' } }
+                { name: { $regex: safeQuery, $options: 'i' } },
+                { description: { $regex: safeQuery, $options: 'i' } }
             ]
         });
 
@@ -32,31 +35,31 @@ router.get('/search', async (req, res) => {
 
 // --- CREATE A PRODUCT (POST /api/products) ---
 router.post('/', async (req, res) => {
-  try {
-    const { name, description, price, salePrice, media, isFeatured } = req.body;
-    if (isFeatured) {
-        await Product.updateMany({}, { isFeatured: false });
+    try {
+        const { name, description, price, salePrice, media, isFeatured } = req.body;
+        if (isFeatured) {
+            await Product.updateMany({}, { isFeatured: false });
+        }
+        const newProduct = new Product({
+            name, description, price, salePrice, media, isFeatured
+        });
+        const savedProduct = await newProduct.save();
+        res.status(201).json(savedProduct);
+    } catch (error) {
+        console.error("Error creating product:", error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: error.message });
+        }
+        res.status(500).json({ message: 'Server error while creating product' });
     }
-    const newProduct = new Product({ 
-        name, description, price, salePrice, media, isFeatured
-    });
-    const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
-  } catch (error) {
-    console.error("Error creating product:", error);
-    if (error.name === 'ValidationError') {
-        return res.status(400).json({ message: error.message });
-    }
-    res.status(500).json({ message: 'Server error while creating product' });
-  }
 });
 
 // This is essential for adding/removing sales from existing products
 router.patch('/:id', async (req, res) => {
     try {
         const product = await Product.findByIdAndUpdate(
-            req.params.id, 
-            req.body, 
+            req.params.id,
+            req.body,
             { new: true, runValidators: true } // new:true returns the updated doc, runValidators ensures our salePrice < price rule runs
         );
         if (!product) {
@@ -71,14 +74,14 @@ router.patch('/:id', async (req, res) => {
 
 // --- GET ALL PRODUCTS (GET /api/products) ---
 router.get('/', async (req, res) => {
-  try {
-    const products = await Product.find({}).sort({ createdAt: -1 });
-    const featuredProduct = await Product.findOne({ isFeatured: true });
-    res.json({ products, featuredProduct });
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({ message: 'Server error while fetching products' });
-  }
+    try {
+        const products = await Product.find({}).sort({ createdAt: -1 });
+        const featuredProduct = await Product.findOne({ isFeatured: true });
+        res.json({ products, featuredProduct });
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({ message: 'Server error while fetching products' });
+    }
 });
 
 // --- GET A SINGLE PRODUCT & RELATED PRODUCTS ---

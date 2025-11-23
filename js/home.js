@@ -1,33 +1,39 @@
 // This file is now much simpler.
 // We are only keeping the logic for the FAQ and the featured product banner.
 
-const setupFAQ = () => {
-    // This logic has been moved to main.js, so this can be removed in the future.
-};
-
 const renderFeaturedProduct = (product) => {
     if (!product || !product.media || product.media.length === 0) return;
-    const heroSection = document.getElementById('hero-section');
-    const heroContentContainer = document.getElementById('hero-content-container');
-    const imageUrl = product.media[0].url;
-    heroSection.style.backgroundImage = `url('${imageUrl}')`;
-    let priceHTML = '';
-    if (product.salePrice && product.salePrice < product.price) {
-        priceHTML = `
-            <div class="flex items-baseline justify-center md:justify-start gap-2">
-                <p class="text-xl md:text-2xl text-white">₹${product.salePrice.toFixed(2)}</p>
-                <p class="text-lg text-gray-300 line-through">₹${product.price.toFixed(2)}</p>
-            </div>`;
-    } else {
-        priceHTML = `<p class="mt-4 max-w-xl mx-auto md:mx-0 text-lg md:text-xl">₹${product.price.toFixed(2)}</p>`;
+
+    // Update Background Image
+    const heroBgImage = document.getElementById('hero-bg-image');
+    if (heroBgImage) {
+        heroBgImage.src = product.media[0].url;
     }
-    heroContentContainer.innerHTML = `
-        <p class="text-sm md:text-base font-semibold uppercase tracking-widest text-yellow-300">Featured Product</p>
-        <h1 class="mt-4 text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight uppercase">${product.name}</h1>
-        <div class="mt-4">${priceHTML}</div>
-        <div class="mt-8">
-            <a href="./product.html?id=${product._id}" class="inline-block bg-white text-black font-bold py-3 px-10 rounded-md hover:bg-gray-200 transition-colors text-lg">Shop Now</a>
-        </div>`;
+
+    // Update Content
+    const heroContentContainer = document.getElementById('hero-content-container');
+    if (heroContentContainer) {
+        let priceHTML = '';
+        if (product.salePrice && product.salePrice < product.price) {
+            priceHTML = `
+                <div class="flex items-baseline justify-center gap-3 mt-4 animate-fade-in-up delay-200">
+                    <p class="text-3xl md:text-4xl font-bold text-white">₹${product.salePrice.toFixed(2)}</p>
+                    <p class="text-xl text-gray-300 line-through">₹${product.price.toFixed(2)}</p>
+                </div>`;
+        } else {
+            priceHTML = `<p class="mt-4 text-2xl md:text-3xl font-bold text-white animate-fade-in-up delay-200">₹${product.price.toFixed(2)}</p>`;
+        }
+
+        heroContentContainer.innerHTML = `
+            <span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-semibold tracking-wider mb-6 animate-fade-in-up">FEATURED DROP</span>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter mb-6 leading-tight uppercase animate-fade-in-up delay-100">${product.name}</h1>
+            ${priceHTML}
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8 animate-fade-in-up delay-300">
+                <a href="./product.html?id=${product._id}" class="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-gray-100 transition-transform hover:scale-105 shadow-lg">
+                    Shop Now
+                </a>
+            </div>`;
+    }
 };
 
 // This function is called by main.js after the page is ready

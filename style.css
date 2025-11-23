@@ -2,16 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add your custom CSS for consistent product images here */
+/* Custom Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+
+/* Glassmorphism Utility */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Product Card Styles */
 .product-card .aspect-w-1.aspect-h-1 {
     position: relative;
-    padding-bottom: 100%; /* This is the trick for a 1:1 aspect ratio */
+    padding-bottom: 100%;
+    overflow: hidden;
 }
 
 .product-card img {
     position: absolute;
     height: 100%;
     width: 100%;
-    /* 'cover' will fill the space and crop bits (best for products) */
-    object-fit: cover; 
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
 }
