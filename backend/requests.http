@@ -1,5 +1,5 @@
 ### CREATE A NEW PRODUCT
-POST https://moretrendz-backend.onrender.com/api/products
+POST https://mt-backend-bvzf.onrender.com/api/products
 Content-Type: application/json
 
 {

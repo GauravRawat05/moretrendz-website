@@ -35,7 +35,7 @@ const renderFeaturedProduct = (product) => {
 // This function is called by main.js after the page is ready
 window.initializePageScripts = async () => {
     try {
-        const apiBase = window.API_BASE_URL || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://moretrendz-backend.onrender.com/api');
+        const apiBase = window.API_BASE_URL || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://mt-backend-bvzf.onrender.com/api');
         const response = await fetch(`${apiBase}/products`);
         const data = await response.json();
         if (data.featuredProduct) {
