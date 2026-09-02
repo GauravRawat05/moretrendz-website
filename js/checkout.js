@@ -1,4 +1,6 @@
 
+import { API_BASE_URL } from './config.js';
+
 // --- Existing Page Logic ---
 const checkoutForm = document.getElementById('checkout-form');
 const discountInput = document.getElementById('discount-code-input');
@@ -66,7 +68,7 @@ if (applyDiscountBtn) {
         if (!code) return;
 
         try {
-            const response = await fetch('https://moretrendz-backend.onrender.com/api/discounts/validate', {
+            const response = await fetch(`${API_BASE_URL}/discounts/validate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code })
@@ -158,7 +160,7 @@ if (checkoutForm) {
         const orderPayload = { shippingDetails, orderItems: cart, totalAmount, paymentMethod };
 
         try {
-            const orderResponse = await fetch('https://moretrendz-backend.onrender.com/api/orders/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderPayload) });
+            const orderResponse = await fetch(`${API_BASE_URL}/orders/create`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderPayload) });
             const orderData = await orderResponse.json();
             if (!orderResponse.ok) throw new Error(orderData.message || 'Failed to create order');
 
@@ -182,7 +184,7 @@ if (checkoutForm) {
                     order_id: razorpayOrder.id,
                     handler: async function (response) {
                         const verificationData = { razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature, dbOrderId: dbOrder._id };
-                        const verificationResponse = await fetch('https://moretrendz-backend.onrender.com/api/orders/verify-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(verificationData) });
+                        const verificationResponse = await fetch(`${API_BASE_URL}/orders/verify-payment`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(verificationData) });
                         if (verificationResponse.ok) {
                             // --- ⬇️ ADD THIS PIXEL CODE for Online ⬇️ ---
                             trackPurchase(dbOrder);

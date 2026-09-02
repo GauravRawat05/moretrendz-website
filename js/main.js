@@ -1,3 +1,4 @@
+import './config.js';
 import { createApp } from 'vue'; // <-- NEW: Import createApp from Vue
 import Header from './components/Header.vue'; // <-- NEW: Import your Header component
 

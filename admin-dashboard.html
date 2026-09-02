@@ -23,6 +23,7 @@
 </head>
 <body class="bg-gray-100">
     <script>
+        const API_BASE_URL = window.API_BASE_URL || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://moretrendz-backend.onrender.com/api');
         const token = localStorage.getItem('adminToken');
 
         if (!token) {
@@ -30,7 +31,7 @@
             window.location.href = 'admin_login.html';
         } else {
             // OPTIONAL: Validate token with backend (optional)
-            fetch('https://moretrendz-backend.onrender.com/api/admin-protected', {
+            fetch(`${API_BASE_URL}/admin-protected`, {
             method: 'GET',
             headers: {
                 Authorization: 'Bearer ' + token
@@ -167,11 +168,11 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <script>
         // --- CONFIG & GLOBAL VARIABLES ---
-        const API_BASE_URL = 'https://moretrendz-backend.onrender.com/api';
-        const PRODUCT_API_URL = 'https://moretrendz-backend.onrender.com/api/products';
-        const ORDER_API_URL = 'https://moretrendz-backend.onrender.com/api/orders';
-        const DISCOUNT_API_URL = 'https://moretrendz-backend.onrender.com/api/discounts';
-        const AI_API_URL = 'https://moretrendz-backend.onrender.com/api/ai';
+        const API_BASE_URL = window.API_BASE_URL || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://moretrendz-backend.onrender.com/api');
+        const PRODUCT_API_URL = `${API_BASE_URL}/products`;
+        const ORDER_API_URL = `${API_BASE_URL}/orders`;
+        const DISCOUNT_API_URL = `${API_BASE_URL}/discounts`;
+        const AI_API_URL = `${API_BASE_URL}/ai`;
         let mediaItems = [];
 
         // --- DOM ELEMENTS ---
@@ -232,7 +233,7 @@
             };
 
             try {
-                const response = await fetch('https://moretrendz-backend.onrender.com/api/reviews/admin', {
+                const response = await fetch(`${API_BASE_URL}/reviews/admin`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

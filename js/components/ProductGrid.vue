@@ -44,6 +44,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { API_BASE_URL } from '../config.js';
 
 const products = ref([]);
 const isLoading = ref(true);
@@ -58,7 +59,7 @@ const calculateDiscountPercentage = (originalPrice, salePrice) => {
 // Fetch products when the component is first created
 onMounted(async () => {
   try {
-    const response = await fetch('https://moretrendz-backend.onrender.com/api/products');
+    const response = await fetch(`${API_BASE_URL}/products`);
     const data = await response.json();
     products.value = data.products || [];
   } catch (err) {

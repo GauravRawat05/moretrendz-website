@@ -1,9 +1,21 @@
 # Dependencies
+node_modules/
 /node_modules
+backend/node_modules/
 
 # Build output
 /dist
+dist/
 
 # Environment variables
 .env
+.env.*
+*.env
 backend/.env
+backend/*.env
+backend/moretrendz-backend.env
+
+# Logs and system files
+*.log
+.DS_Store
+Thumbs.db

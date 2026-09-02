@@ -56,7 +56,8 @@
       const errorBox = document.getElementById('errorBox');
 
       try {
-        const response = await fetch('https://moretrendz-backend.onrender.com/api/admin-login', {
+        const apiBase = window.API_BASE_URL || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://moretrendz-backend.onrender.com/api');
+        const response = await fetch(`${apiBase}/admin-login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })

@@ -51,6 +51,7 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
+import { API_BASE_URL } from '../config.js';
 
 const reviews = ref([]);
 const isLoading = ref(true);
@@ -62,7 +63,7 @@ const productId = new URLSearchParams(window.location.search).get('id');
 const fetchReviews = async () => {
   try {
     isLoading.value = true;
-    const response = await fetch(`https://moretrendz-backend.onrender.com/api/reviews/product/${productId}`);
+    const response = await fetch(`${API_BASE_URL}/reviews/product/${productId}`);
     if (!response.ok) throw new Error('Could not load reviews.');
     reviews.value = await response.json();
   } catch (err) {
@@ -80,7 +81,7 @@ const submitReview = async () => {
   if (!newReview.rating) { if (window.showModal) window.showModal('Input Error', 'Please select a star rating.');
     else alert('Please select a star rating.'); return; }
   try {
-    const response = await fetch('https://moretrendz-backend.onrender.com/api/reviews', {
+    const response = await fetch(`${API_BASE_URL}/reviews`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...newReview, productId })

@@ -1,69 +1,82 @@
-// File: backend/routes/aiRoutes.js (updated)
+// File: backend/routes/aiRoutes.js
 
 const express = require('express');
+const axios = require('axios');
 const router = express.Router();
 
-async function callGemini(prompt) {
-    const apiKey = process.env.GEMINI_API_KEY;
+/**
+ * Call Groq Cloud AI API (Fast & Free)
+ */
+async function callGroqAI(prompt, systemInstruction = "You are an expert e-commerce copywriter.") {
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-        throw new Error("GEMINI_API_KEY is not defined in the .env file.");
+        throw new Error("GROQ_API_KEY is not defined in the .env file.");
     }
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+    const apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
     const payload = {
-        contents: [{
-            role: "user",
-            parts: [{ text: prompt }]
-        }]
+        model: 'openai/gpt-oss-120b',
+        messages: [
+            {
+                role: 'system',
+                content: systemInstruction
+            },
+            {
+                role: 'user',
+                content: prompt
+            }
+        ],
+        temperature: 0.7,
+        max_tokens: 1024
     };
+
     try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        const response = await axios.post(apiUrl, payload, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            }
         });
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`API call failed with status: ${response.status}, body: ${errorBody}`);
-        }
-        const result = await response.json();
-        if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
-            return result.candidates[0].content.parts[0].text;
+
+        const content = response.data?.choices?.[0]?.message?.content;
+        if (content) {
+            return content.trim();
         } else {
-            console.warn("Unexpected Gemini API response structure:", result);
+            console.warn("Unexpected Groq API response structure:", response.data);
             return "Sorry, I couldn't generate a response right now.";
         }
     } catch (error) {
-        console.error("Error calling Gemini API:", error);
+        console.error("Error calling Groq API:", error.response ? error.response.data : error.message);
         throw error;
     }
 }
 
-// --- ROUTE FOR AI PRODUCT DESCRIPTION (IMPROVED PROMPT) ---
+// --- ROUTE FOR AI PRODUCT DESCRIPTION ---
 router.post('/generate-description', async (req, res) => {
     const { productName } = req.body;
     if (!productName) {
         return res.status(400).json({ message: 'Product name is required.' });
     }
-    // This prompt is now generic for any trending product
-    const prompt = `Write a compelling, short e-commerce product description for a trending product named "${productName}". Use HTML paragraph tags for the output. Be creative, sound exciting, and highlight its key features and why it's popular.`;
+
+    const prompt = `Write a compelling, short e-commerce product description for a trending product named "${productName}". Use clean HTML paragraph tags (<p>...</p>) for the output. Be creative, sound exciting, and highlight its key features and why customers love it.`;
     try {
-        const description = await callGemini(prompt);
+        const description = await callGroqAI(prompt, "You are a professional e-commerce product copywriter. Output only clean HTML tags.");
         res.json({ description });
     } catch (error) {
         res.status(500).json({ message: 'Failed to generate description from AI.' });
     }
 });
 
-// --- ROUTE FOR AI SUGGESTION (IMPROVED PROMPT) ---
+// --- ROUTE FOR AI CART / OUTFIT / BUNDLE SUGGESTION ---
 router.post('/suggest-outfit', async (req, res) => {
     const { productNames } = req.body;
     if (!productNames || productNames.length === 0) {
         return res.status(400).json({ message: 'Product names are required.' });
     }
-    // This prompt now works for any combination of products
-    const prompt = `I have these items in my shopping cart: ${productNames.join(', ')}. As a product expert, suggest how these items can be used together or complement each other. Be creative! For example, if it's a kitchen gadget and a toy, suggest a fun family activity. If it's multiple toys, suggest a fun scenario.`;
+
+    const prompt = `I have these items in my shopping cart: ${productNames.join(', ')}. As a product expert, suggest how these items can be used together or complement each other. Be creative, helpful, and concise.`;
     try {
-        const suggestion = await callGemini(prompt);
+        const suggestion = await callGroqAI(prompt, "You are a helpful and friendly shopping assistant.");
         res.json({ suggestion });
     } catch (error) {
         res.status(500).json({ message: 'Failed to get suggestion from AI.' });

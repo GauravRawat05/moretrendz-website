@@ -13,22 +13,32 @@ const app = express();
 app.set('trust proxy', 1);
 
 // --- UPDATED CORS POLICY ---
-// This list contains all the URLs that are allowed to make requests to your backend.
 const allowedOrigins = [
-  'https://moretrendz.online',      // Your live frontend
-  'https://www.moretrendz.online',
-  'http://localhost:5173'         // Your local Vite development server
+  'https://moretrendz-website.onrender.com', // Render frontend
+  'http://localhost:5173',                   // Local Vite dev server
+  'http://127.0.0.1:5173'
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps, curl, or Postman)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
+
+    try {
+      const parsedUrl = new URL(origin);
+      const isAllowed =
+        allowedOrigins.indexOf(origin) !== -1 ||
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+        parsedUrl.hostname.endsWith('.vercel.app') ||
+        parsedUrl.hostname.endsWith('.onrender.com');
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+    } catch (e) {}
+
+    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+    return callback(new Error(msg), false);
   }
 };
 app.use(cors(corsOptions));

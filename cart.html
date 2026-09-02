@@ -149,7 +149,8 @@
             openAiModal();
             const productNames = cart.map(item => item.name);
             try {
-                const response = await fetch('https://moretrendz-backend.onrender.com/api/ai/suggest-outfit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ productNames }) });
+                const apiBase = window.API_BASE_URL || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://moretrendz-backend.onrender.com/api');
+                const response = await fetch(`${apiBase}/ai/suggest-outfit`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ productNames }) });
                 if (!response.ok) { throw new Error('Could not get a suggestion from the AI stylist.'); }
                 const data = await response.json();
                 suggestionTextElement.textContent = data.suggestion;

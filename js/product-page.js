@@ -34,7 +34,8 @@ async function fetchProductDetails() {
             throw new Error('No product ID provided.');
         }
 
-        const response = await fetch(`https://moretrendz-backend.onrender.com/api/products/${productId}`);
+        const apiBase = window.API_BASE_URL || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://moretrendz-backend.onrender.com/api');
+        const response = await fetch(`${apiBase}/products/${productId}`);
         if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
         if (!data.product) throw new Error('Product data not found in API response.');

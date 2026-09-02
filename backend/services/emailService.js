@@ -62,7 +62,7 @@ async function sendOrderConfirmationEmail(order) {
                 'Authorization': `Bearer ${RESEND_API_KEY}`
             },
             body: JSON.stringify({
-                from: 'MoreTrendz <orders@moretrendz.online>', // IMPORTANT: This must be from your verified domain
+                from: process.env.EMAIL_FROM || 'MoreTrendz <onboarding@resend.dev>',
                 to: [customerEmail],
                 subject: `Your MoreTrendz Order Confirmation #${orderId}`,
                 html: emailHtml

@@ -6,9 +6,9 @@ const crypto = require('crypto');
 const router = express.Router();
 const Order = require('../models/Order');
 
-// Import ALL notification services
-const { sendTelegramNotification, logOrderToGoogleSheet } = require('../services/notificationService');
-const { sendOrderConfirmationEmail } = require('../services/emailService'); // <-- ADD THIS LINE
+// Import notification & email services
+const { sendTelegramNotification } = require('../services/notificationService');
+const { sendOrderConfirmationEmail } = require('../services/emailService');
 
 // --- RAZORPAY CONFIGURATION ---
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
@@ -42,17 +42,16 @@ router.post('/create', async (req, res) => {
             });
             const savedOrder = await newOrder.save();
             
-            // --- Send all notifications for COD orders ---
+            // --- Send notifications for COD orders ---
             sendTelegramNotification(savedOrder);
-            logOrderToGoogleSheet(savedOrder);
-            sendOrderConfirmationEmail(savedOrder); // <-- ADD THIS LINE
+            sendOrderConfirmationEmail(savedOrder);
             
             return res.status(201).json({ dbOrder: savedOrder });
         }
 
         if (paymentMethod === 'Online') {
             const razorpayOptions = {
-                amount: totalAmount * 100,
+                amount: Math.round(totalAmount * 100),
                 currency: 'INR',
                 receipt: `receipt_order_${new Date().getTime()}`
             };
@@ -112,10 +111,9 @@ router.post('/verify-payment', async (req, res) => {
             return res.status(404).json({ message: 'Order not found in database.' });
         }
 
-        // --- Send all notifications for successful online orders ---
+        // --- Send notifications for verified online orders ---
         sendTelegramNotification(updatedOrder);
-        logOrderToGoogleSheet(updatedOrder);
-        sendOrderConfirmationEmail(updatedOrder); // <-- ADD THIS LINE
+        sendOrderConfirmationEmail(updatedOrder);
 
         res.status(200).json({ success: true, message: 'Payment verified successfully.' });
 
@@ -127,7 +125,6 @@ router.post('/verify-payment', async (req, res) => {
 
 
 // --- ADMIN ROUTES ---
-// (These remain unchanged)
 router.get('/', async (req, res) => {
     try {
         const orders = await Order.find({}).sort({ createdAt: -1 });
@@ -169,6 +166,5 @@ router.patch('/:id', async (req, res) => {
         res.status(500).json({ message: 'Failed to update order status' });
     }
 });
-
 
 module.exports = router;
